@@ -1,0 +1,125 @@
+# User variables
+HOST_BUILD_WIN32      = 1
+USER_PROJECT_NAME     = gcc-arm
+DEVICE_BOOT_TO_FLASH  = 0
+USER_PROCESSOR_CLASS  = cortex-m3
+USER_DEVICE_CLASS     = STM32F10X
+USER_DEVICE_DENSITY   = _MD_VL
+DEVICE_INSTRUCT_SET   = thumb
+# Defines
+USER_C_DEFINES        =
+USER_ASM_DEFINES      =
+# Include paths
+USER_INCLUDE_PATH     = ./inc
+# STM Firmware path
+STM_FIRMWARE_PATH     = ../Discovery
+# Library paths/
+USER_LIBRARY_PATH     =
+USER_LIBRARIES        =
+# Build/Output paths
+BUILD_DIRECTORY       =
+OUTPUT_DIRECTORY      =
+# Source files
+USER_ASSEMBLY_FILES   = 
+USER_C_FILES          = ./src/main.c ./src/stm32f10x_it.c ../Discovery/Utilities/STM32vldiscovery.c $(STM_PERIPH_PATH)src/misc.c $(STM_CMSIS_PATH)system_stm32f10x.c ./src/startup_stm32f10x_md_vl.c
+USER_CXX_FILES        =
+STD_PERIPH_FILES      = RCC.c I2C.c PWR.c GPIO.c EXTI.c
+CMSIS_FILE            = core_cm3.c
+# End of user variables
+
+# Start of build variables
+TARGET       = arm-none-eabi-
+C_COMPILER   = $(TARGET)gcc
+CXX_COMPILER = $(TARGET)g++
+COPY_OBJECT  = $(TARGET)objcopy
+DUMP_OBJECT  = $(TARGET)objdump
+ASSEMBLER    = $(TARGET)gcc -x assembler-with-cpp
+COPY_AS_HEX  = $(COPY_OBJECT) -O ihex
+COPY_AS_BIN  = $(COPY_OBJECT) -O binary -S
+ST_LINK_CLI  = C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility\st-link_cli.exe
+
+ifeq ($(DEVICE_BOOT_TO_FLASH), 0)
+PROJECT_OUTPUT_NAME = $(USER_PROJECT_NAME)-ram
+BOOT_MODE_OPTIONS   = -DRUN_FROM_FLASH=0 -DVECT_TAB_SRAM
+else
+PROJECT_OUTPUT_NAME = $(USER_PROJECT_NAME)-rom
+BOOT_MODE_OPTIONS   = -DRUN_FROM_FLASH=1
+endif
+
+OBJECT_FILES  = $(USER_ASSEMBLY_FILES:.s=.o) $(USER_C_FILES:.c=.o) $(USER_CXX_FILES:.cpp=.0) $(patsubst %.c,$(STM_PERIPH_PATH)src/$(USER_DEVICE_CLASS)_%.o,$(STD_PERIPH_FILES)) $(ARM_CMSIS_PATH)$(CMSIS_FILE:.c=.o)
+LIBRARIES     = $(USER_LIBRARIES)
+
+LINKER_SCRIPT = ./linker/$(USER_DEVICE_CLASS)$(USER_DEVICE_DENSITY).ld
+
+ASM_DEFINES        = $(USER_ASM_DEFINES)
+C_DEFINES          = -D$(USER_DEVICE_CLASS)$(USER_DEVICE_DENSITY) -DUSE_STDPERIPH_DRIVER $(BOOT_MODE_OPTIONS) $(USER_C_DEFINES)
+
+STM_PERIPH_PATH    = $(STM_FIRMWARE_PATH)/Libraries/$(USER_DEVICE_CLASS)_StdPeriph_Driver/
+STM_DISCOVERY_PATH = $(STM_FIRMWARE_PATH)/Utilities/
+ARM_CMSIS_PATH     = $(STM_FIRMWARE_PATH)/Libraries/CMSIS/CM3/CoreSupport/
+STM_CMSIS_PATH     = $(STM_FIRMWARE_PATH)/Libraries/CMSIS/CM3/DeviceSupport/ST/$(USER_DEVICE_CLASS)/
+
+INCLUDE_PATH = $(patsubst %,-I%,$(USER_INCLUDE_PATH) $(STM_PERIPH_PATH)inc/ $(STM_DISCOVERY_PATH) $(ARM_CMSIS_PATH) $(STM_CMSIS_PATH))
+LIBRARY_PATH = $(patsubst %,-L%,$(USER_LIBRARY_PATH))
+
+PROCESSOR_FLAGS = -mcpu=$(USER_PROCESSOR_CLASS) -m$(DEVICE_INSTRUCT_SET)
+
+ASSEMBLER_FLAGS = $(PROCESSOR_FLAGS) -g -gdwarf-2 -Wa,-amhls=$(<:.s=.lst) $(ASM_DEFINES)
+C_FLAGS         = $(PROCESSOR_FLAGS) -gdwarf-2 -fomit-frame-pointer -Wall -Wstrict-prototypes -fverbose-asm -Wa,-ahlms=$(<:.c=.list) $(C_DEFINES)
+LINKER_FLAGS    = $(PROCESSOR_FLAGS) -nostartfiles -T$(LINKER_SCRIPT) -Wl,-Map=$(PROJECT_OUTPUT_NAME).map,--cref,--no-warn-mismatch $(LIBRARY_PATH)
+
+ifeq ($(BUILD_HOST_WIN32),1)
+BUILD_PATH  = $(subst /,%\,$(BUILD_DIRECTORY))
+OUTPUT_PATH = $(subst /,%\,$(OUTPUT_DIRECTORY))
+else
+BUILD_PATH  = $(BUILD_DIRECTORY)
+OUTPUT_PATH = $(OUTPUT_DIRECTORY)
+endif
+# End of build variables
+
+# Start of target information
+
+all: $(OBJECT_FILES) $(PROJECT_OUTPUT_NAME).disasm $(PROJECT_OUTPUT_NAME).elf $(PROJECT_OUTPUT_NAME).hex $(PROJECT_OUTPUT_NAME).bin $(OUTPUT_PATH)
+	$(TARGET)size $(PROJECT_OUTPUT_NAME).elf
+
+%o: %c $(BUILD_PATH)
+	$(C_COMPILER) -c $(C_FLAGS) $(INCLUDE_PATH) $< -o $(BUILD_PATH)$@
+
+%o: %s $(BUILD_PATH)
+	$(ASSEMBLER) -c $(ASSEMBLER_FLAGS) $< -o $(BUILD_PATH)$@
+
+%elf: $(OBJECT_FILES) $(LINKER_SCRIPT)
+	$(C_COMPILER) $(OBJECT_FILES) $(LINKER_FLAGS) $(LIBRARIES) -o $(OUTPUT_PATH)$@
+
+%hex: %elf
+	$(COPY_AS_HEX) $< $@
+
+%bin: %elf
+	$(COPY_AS_BIN) $< $@
+
+%disasm: %elf
+	$(DUMP_OBJECT) -h -d -S $< > $@
+
+$(BUILD_PATH):
+	mkdir $(BUILD_PATH)
+
+$(OUTPUT_PATH):
+	mkdir $(OUTPUT_PATH)
+
+.PHONY: download
+download:
+	$(ST_LINK_CLI) -Q -c SWD -P $(PROJECT_OUTPUT_NAME).hex -V -Rst -Run
+	
+.PHONY: clean
+clean:
+	del $(PROJECT_OUTPUT_NAME).elf
+	del $(PROJECT_OUTPUT_NAME).map
+	del $(PROJECT_OUTPUT_NAME).hex
+	del $(PROJECT_OUTPUT_NAME).bin
+	del $(PROJECT_OUTPUT_NAME).disasm
+	del $(USER_C_FILES:%.c="%.lst")
+	del $(USER_ASSEMBLY_FILES:%.s="%.lst")
+	del $(OBJECT_FILES:%="%")
+# End of target information
+
+#! @todo Include a download/verify entry
