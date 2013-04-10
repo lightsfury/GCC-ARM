@@ -40,7 +40,7 @@ STM_DISCOVERY_FILES		= 1
 ST_LINK_CLI_PATH		= "C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility\st-link_cli.exe"
 
 # @section User source path
-USER_C_FILES			= ./src/main.c ./src/stm32f10x_it.c
+USER_C_FILES			= ./src/main.c ./src/isr.c
 USER_CXX_FILES			=
 USER_ASM_FILES			=
 
@@ -78,11 +78,9 @@ all: $(OBJECT_FILES) $(USER_PROJECT_NAME).elf $(USER_PROJECT_NAME).hex
 
 %c-o: %c
 	$(C_COMPILER) -c $(C_FLAGS) $(INCLUDE_PATH) $< -o $@
-	$(C_COMPILER) -c $(C_FLAGS) $(INCLUDE_PATH) $< > $@.c.dep
 
 %cpp-o: %cpp
 	$(CXX_COMPILER) -c $(CXX_FLAGS) $(INCLUDE_PATH) $< -o $@
-	$(CXX_COMPILER) -MM $(CXX_FLAGS) $(INCLUDE_PATH) $< > $@.cpp.dep
 
 %s-o: %s
 	$(ASM_COMPILER) -c $(ASM_FLAGS) $< -o $@
@@ -92,7 +90,7 @@ all: $(OBJECT_FILES) $(USER_PROJECT_NAME).elf $(USER_PROJECT_NAME).hex
 
 %hex: %elf
 	$(MAKE_HEX) $< $@
-	
+
 %disasm: %elf
 	$(TARGET)objdump -h -d -S $< $@
 

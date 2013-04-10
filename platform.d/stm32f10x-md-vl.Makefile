@@ -27,7 +27,7 @@ _DEBUG_COMPILER_FLAGS	= -O2
 _DEBUG_LINKER_FLAGS		=
 endif
 
-_TARGET_COMPILER_FLAGS	= -mthumb -mcpu=cortex-m3 $(_DEBUG_COMPILER_FLAGS) -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD_VL
+_TARGET_COMPILER_FLAGS	= -mthumb -mcpu=cortex-m3 $(_DEBUG_COMPILER_FLAGS) -DSTM32F10X_MD_VL -DUSE_STDPERIPH_DRIVER
 _TARGET_LINKER_FLAGS	= -mthumb -mcpu=cortex-m3 -T./platform.d/stm32f10x-md-vl.ld $(_DEBUG_LINKER_FLAGS) -nostartfiles
 
 #! @todo Add STM peripheral driver/CMSIS paths

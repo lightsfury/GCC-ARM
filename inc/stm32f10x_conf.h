@@ -1,76 +1,51 @@
 /**
-  ******************************************************************************
-  * @file    Demo/inc/stm32f10x_conf.h 
-  * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    09/13/2010
-  * @brief   Library configuration file.
-  ******************************************************************************
-  * @copy
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
-  */ 
+Copyright (c) 2013 Robert Beam
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F10x_CONF_H
-#define __STM32F10x_CONF_H
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-/* Includes ------------------------------------------------------------------*/
-/* Uncomment the line below to enable peripheral header file inclusion */
-/* #include "stm32f10x_adc.h" */
-/* #include "stm32f10x_bkp.h" */
-/* #include "stm32f10x_can.h" */
-/* #include "stm32f10x_crc.h" */
-/* #include "stm32f10x_dac.h" */
-/* #include "stm32f10x_dbgmcu.h" */
-/* #include "stm32f10x_dma.h" */
-#include "stm32f10x_exti.h"
-#include "stm32f10x_flash.h"
-/* #include "stm32f10x_fsmc.h" */
-#include "stm32f10x_gpio.h"
-/* #include "stm32f10x_i2c.h" */
-/* #include "stm32f10x_iwdg.h" */
-#include "stm32f10x_pwr.h"
-#include "stm32f10x_rcc.h"
-/* #include "stm32f10x_rtc.h" */
-/* #include "stm32f10x_sdio.h" */
-/* #include "stm32f10x_spi.h" */
-/* #include "stm32f10x_tim.h" */
-/* #include "stm32f10x_usart.h" */
-/* #include "stm32f10x_wwdg.h" */
-#include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+**/
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Uncomment the line below to expanse the "assert_param" macro in the 
-   Standard Peripheral Library drivers code */
-/* #define USE_FULL_ASSERT    1 */
-
-/* Exported macro ------------------------------------------------------------*/
-#ifdef  USE_FULL_ASSERT
+#ifndef _STM32F10X_CONF_H_
+#define _STM32F10X_CONF_H_
 
 /**
-  * @brief  The assert_param macro is used for function's parameters check.
-  * @param  expr: If expr is false, it calls assert_failed function
-  *   which reports the name of the source file and the source
-  *   line number of the call that failed. 
-  *   If expr is true, it returns no value.
-  * @retval None
-  */
-  #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
-/* Exported functions ------------------------------------------------------- */
-  void assert_failed(uint8_t* file, uint32_t line);
+	This file is automatically included by STF32F10x.h. As such, you should
+	include at least:
+		Peripheral driver header files
+		Project-global functions and types
+		Interrupt service routines
+**/
+
+void InitPeripheralDevices();
+
+#ifdef USE_FULL_ASSERT
+	/**
+		The STM peripheral library makes extensive use of the user-defined
+		assert_param macro. Such extensive use makes failure identification much
+		simpler.
+	**/
+	#define assert_param(e) {if (!(e)) {               \
+		assert_failed((uint8_t*)__FILE__, __LINE__); } }
+	
+	void assert_failed(uint8_t* file, uint32_t lineNumber);
 #else
-  #define assert_param(expr) ((void)0)
-#endif /* USE_FULL_ASSERT */
+	/* No-op assertion */
+	#define assert_param(...) 
+#endif // USE_FULL_ASSERT
 
-#endif /* __STM32F10x_CONF_H */
+#endif // _STM32F10X_CONF_H_
 
-/******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/

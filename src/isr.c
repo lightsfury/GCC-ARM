@@ -18,31 +18,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-
 #include <stm32f10x.h>
 #include <stm32f10x_conf.h>
 #include <stdint.h>
+/**
+	This should should contain any required interrupt service routines. ISR
+	methods have a void(void) call signature. That is, they take no arguments
+	and return no values.
+**/
 
-int main()
+static volatile uint32_t _DelayCounter;
+
+/**
+	Example ISR. Handles the SYSTICK interrupt service routine. Automatic names
+	can be found in the platform.d/boot_$(USER_DEVICE_CLASS).c file.
+**/
+void SysTick_Handler()
 {
-	InitPeripheralDevices();
-	
-	/* Make playtime */
-	
-	return 1;
+	_DelayCounter--;
 }
-
-void InitPeripheralDevices()
-{
-	/* Initialize peripheral clocks, GPIO ports, etc */
-}
-
-
-#ifdef USE_FULL_ASSERT
-
-void assert_failed(uint8_t* file, uint32_t lineNumber)
-{
-	while (1) /* no-op loop */;
-}
-
-#endif
