@@ -30,6 +30,18 @@ SOFTWARE.
 		Interrupt service routines
 **/
 
+/**
+	The STM32vl discovery files require that the conf.h file include the
+	neccesary header files.
+**/
+#ifdef STM_DISCOVERY_FILES
+	#include <misc.h>
+	#include <stm32f10x_exti.h>
+	#include <stm32f10x_gpio.h>
+	#include <stm32f10x_rcc.h>
+#endif
+
+
 void InitPeripheralDevices();
 
 #ifdef USE_FULL_ASSERT

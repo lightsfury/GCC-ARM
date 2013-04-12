@@ -27,11 +27,13 @@ USER_C_DEFINES			=
 USER_ASM_DEFINES		=
 USER_CXX_DEFINES		=
 
-# @section User include & library path
+# @section User paths
 # @note All paths should end with a directory seperator (/)
 USER_INCLUDE_PATH		= ./inc/
 USER_LIBRARY_PATH		=
 USER_LIBRARIES			=
+BUILD_PATH				= ./build/
+OUTPUT_PATH				= ./bin/
 
 # @section Device firmware package info
 STM_PERIPH_DRIVER_PATH	= ../Discovery/
@@ -58,42 +60,59 @@ ASM_COMPILER	= $(TARGET)g++ -x assembler-with-cpp
 MAKE_HEX		= $(TARGET)objcopy -O ihex
 MAKE_BIN		= $(TARGET)objcopy -O binary -S
 
-SOURCE_FILES	= $(USER_CXX_FILES) $(USER_C_FILES) $(USER_ASM_FILES) $(_TARGET_CORE_FILES)
+SOURCE_FILES	= $(USER_CXX_FILES) $(USER_C_FILES) $(USER_ASM_FILES)
 C_FILES			= $(filter %.c, $(SOURCE_FILES))
 CXX_FILES		= $(filter %.cpp, $(SOURCE_FILES))
 ASM_FILES		= $(filter %.s, $(SOURCE_FILES))
-OBJECT_FILES	= $(C_FILES:.c=.c-o) $(CXX_FILES:.cpp=.cpp-o) $(ASM_FILES:.s=.s-o)
+
+OBJECT_FILES	:= $(realpath $(addprefix $(BUILD_PATH), $(C_FILES:.c=.c-o) $(CXX_FILES:.cpp=.cpp-o) $(ASM_FILES:.s=.s-o))) $(_TARGET_CORE_OBJECT_FILES)
 LIBS			= $(USER_LIBRARIES)
 
-INCLUDE_PATH	= $(patsubst %, "-I%", $(USER_INCLUDE_PATH) $(_TARGET_INCLUDE_PATH))
-LIBRARY_PATH	= $(patsubst %, "-L%", $(USER_LIBRARY_PATH) $(_TARGET_LIBRARY_PATH))
+REAL_BUILD_PATH	= $(realpath $(BUILD_PATH))/
+
+INCLUDE_PATH	= $(patsubst %, "-I%", $(realpath $(USER_INCLUDE_PATH) $(_TARGET_INCLUDE_PATH)))
+LIBRARY_PATH	= $(patsubst %, "-L%", $(realpath $(USER_LIBRARY_PATH) $(_TARGET_LIBRARY_PATH)))
 
 ASM_FLAGS		= $(_TARGET_COMPILER_FLAGS) $(USER_ASM_DEFINES)
 C_FLAGS			= $(_TARGET_COMPILER_FLAGS)	$(USER_C_DEFINES) -Wall
 CXX_FLAGS		= $(_TARGET_COMPILER_FLAGS) $(USER_CXX_DEFINES) -Wall
 
-# @section Build target
-all: $(OBJECT_FILES) $(USER_PROJECT_NAME).elf $(USER_PROJECT_NAME).hex
-	$(TARGET)size $(USER_PROJECT_NAME).elf
+# @section Build targets
+.SECONDEXPANSION:
 
-%c-o: %c
+all: $(OBJECT_FILES) $(OUTPUT_PATH)$(USER_PROJECT_NAME).elf $(OUTPUT_PATH)$(USER_PROJECT_NAME).hex
+	$(TARGET)size $(OUTPUT_PATH)$(USER_PROJECT_NAME).elf
+
+$(REAL_BUILD_PATH)%c-o: %c $$(@D)/.d
 	$(C_COMPILER) -c $(C_FLAGS) $(INCLUDE_PATH) $< -o $@
 
-%cpp-o: %cpp
+$(REAL_BUILD_PATH)%cpp-o: %cpp $$(@D)/.d
 	$(CXX_COMPILER) -c $(CXX_FLAGS) $(INCLUDE_PATH) $< -o $@
 
-%s-o: %s
+$(REAL_BUILD_PATH)%s-o: %s $$(@D)/.d
 	$(ASM_COMPILER) -c $(ASM_FLAGS) $< -o $@
 
-%elf: $(OBJECT_FILES) $(_TARGET_PLATFORM_FILES)
+%elf: $(OBJECT_FILES) $(_TARGET_PLATFORM_FILES) $$(@D)/.d
 	$(C_COMPILER) $(OBJECT_FILES) $(_TARGET_LINKER_FLAGS) $(LIBS) -o $@
 
-%hex: %elf
+%hex: %elf $$(@D)/.d
 	$(MAKE_HEX) $< $@
 
-%disasm: %elf
+%disasm: %elf $$(@D)/.d
 	$(TARGET)objdump -h -d -S $< $@
+
+%/.d:
+	mkdir "$(dir $@)"
+	touch "$@"
+
+.PHONY: clean
+clean:
+	rm -R $(REAL_BUILD_PATH)
+	rm -R $(OUTPUT_PATH)
 
 .PHONY: download
 download: $(USER_PROJECT_NAME).hex
 	$(ST_LINK_CLI_PATH) -Q -c SWD -P $< -V -Rst -Run
+
+debug:
+	@echo $(OBJECT_FILES)
