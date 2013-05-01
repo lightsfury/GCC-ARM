@@ -34,6 +34,10 @@ USER_LIBRARY_PATH		=
 USER_LIBRARIES			=
 BUILD_PATH				= ./build/
 OUTPUT_PATH				= ./bin/
+INCLUDE_LIBC			= 1
+# Set to 1 to link against librdimon.a
+# Set to 0 to link against libnosys.a
+LIBC_USE_RDIMON			= 0
 
 # @section Device firmware package info
 STM_PERIPH_DRIVER_PATH	= ../Discovery/
@@ -50,7 +54,7 @@ DEBUG_BUILD				= 1
 # End of user variables
 
 # Include platform dependent variables
--include ./platform.d/$(USER_DEVICE_CLASS).Makefile
+-include ./platform.d/$(USER_DEVICE_CLASS)/Makefile
 
 # @section Build variables
 TARGET			= arm-none-eabi-
@@ -70,17 +74,26 @@ LIBS			= $(USER_LIBRARIES)
 
 REAL_BUILD_PATH	= $(realpath $(BUILD_PATH))/
 
-INCLUDE_PATH	= $(patsubst %, "-I%", $(realpath $(USER_INCLUDE_PATH) $(_TARGET_INCLUDE_PATH)))
-LIBRARY_PATH	= $(patsubst %, "-L%", $(realpath $(USER_LIBRARY_PATH) $(_TARGET_LIBRARY_PATH)))
+INCLUDE_PATH	= $(patsubst %, "-I%", $(USER_INCLUDE_PATH) $(_TARGET_INCLUDE_PATH))
+LIBRARY_PATH	= $(patsubst %, "-L%", $(USER_LIBRARY_PATH) $(_TARGET_LIBRARY_PATH))
 
 ASM_FLAGS		= $(_TARGET_COMPILER_FLAGS) $(USER_ASM_DEFINES)
 C_FLAGS			= $(_TARGET_COMPILER_FLAGS)	$(USER_C_DEFINES) -Wall
 CXX_FLAGS		= $(_TARGET_COMPILER_FLAGS) $(USER_CXX_DEFINES) -Wall
 
+ifeq ($(INCLUDE_LIBC),1)
+ifeq ($(LIBC_USE_RDIMON),1)
+LIBS	+= -lrdimon -lc -lgcc -lrdimon
+else
+LIBS	+= -lnosys -lc -lgcc -lnosys
+endif
+# ifeq LIBC_USE_RDIMON
+endif
+
 # @section Build targets
 .SECONDEXPANSION:
 
-all: $(OBJECT_FILES) $(OUTPUT_PATH)$(USER_PROJECT_NAME).elf $(OUTPUT_PATH)$(USER_PROJECT_NAME).hex
+all: $(OBJECT_FILES) $(OUTPUT_PATH)$(USER_PROJECT_NAME).elf $(OUTPUT_PATH)$(USER_PROJECT_NAME).hex $(OUTPUT_PATH)$(USER_PROJECT_NAME).bin $(OUTPUT_PATH)$(USER_PROJECT_NAME).disasm
 	$(TARGET)size $(OUTPUT_PATH)$(USER_PROJECT_NAME).elf
 
 $(REAL_BUILD_PATH)%c-o: %c $$(@D)/.d
@@ -93,13 +106,18 @@ $(REAL_BUILD_PATH)%s-o: %s $$(@D)/.d
 	$(ASM_COMPILER) -c $(ASM_FLAGS) $< -o $@
 
 %elf: $(OBJECT_FILES) $(_TARGET_PLATFORM_FILES) $$(@D)/.d
-	$(C_COMPILER) $(OBJECT_FILES) $(_TARGET_LINKER_FLAGS) $(LIBS) -o $@
+	$(C_COMPILER) $(_TARGET_LINKER_FLAGS) $(LIBRARY_PATH) $(LIBS) $(OBJECT_FILES) $(LIBS) -o $@
 
 %hex: %elf $$(@D)/.d
 	$(MAKE_HEX) $< $@
 
+%bin: %elf $$(@D)/.d
+	$(MAKE_BIN) $< $@
+
 %disasm: %elf $$(@D)/.d
-	$(TARGET)objdump -h -d -S $< $@
+	$(TARGET)objdump -h -d -S $< > $@
+
+.PRECIOUS: %/.d
 
 %/.d:
 	mkdir "$(dir $@)"
@@ -111,8 +129,9 @@ clean:
 	rm -R $(OUTPUT_PATH)
 
 .PHONY: download
-download: $(USER_PROJECT_NAME).hex
+download: $(OUTPUT_PATH)$(USER_PROJECT_NAME).hex
 	$(ST_LINK_CLI_PATH) -Q -c SWD -P $< -V -Rst -Run
 
 debug:
-	@echo $(OBJECT_FILES)
+	@echo $(LIBRARY_PATH)
+	@echo $(LIBS)

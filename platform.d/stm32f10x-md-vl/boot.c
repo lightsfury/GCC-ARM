@@ -28,7 +28,10 @@ SOFTWARE.
 	#define _WEAK_SYMBOL_ __attribute__((weak))
 #endif
 
-#define NVIC_HANDLER(a) void a (void) __attribute__((weak, alias("Default_Handler")))
+#ifndef NVIC_HANDLER
+	#define NVIC_HANDLER(a) void a (void)             \
+		__attribute__((weak, alias("Default_Handler")))
+#endif
 
 extern void _stackStart(void);
 

@@ -85,4 +85,14 @@ SECTIONS
 	
 	_staticZeroAddr = ADDR(.bss);
 	_staticZeroLength = SIZEOF(.bss);
+	
+	/DISCARD/		:
+	{
+		*(.debug)
+		*(.debug*)
+		*(.comment)
+		*(.comment*)
+	}
+	
+	PROVIDE(end = _stackStart);
 }
