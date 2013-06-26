@@ -39,10 +39,22 @@ SOFTWARE.
 	#include <stm32f10x_exti.h>
 	#include <stm32f10x_gpio.h>
 	#include <stm32f10x_rcc.h>
+	#include <stm32f10x_pwr.h>
+	#include <stm32f10x_i2c.h>
+	#include <stm32vldiscovery.h>
 #endif
 
+#ifdef __cplusplus
+	#define EXTERN		extern
+	#define EXTERN_C	extern "C"
+#else
+	#define EXTERN		extern
+	#define EXTERN_C	extern
+#endif
 
-void InitPeripheralDevices();
+EXTERN_C void InitPeripheralDevices();
+EXTERN_C void Delay(uint32_t);
+EXTERN_C uint32_t GetTickCount();
 
 #ifdef USE_FULL_ASSERT
 	/**

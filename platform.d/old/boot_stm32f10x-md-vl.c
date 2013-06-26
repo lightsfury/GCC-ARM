@@ -211,4 +211,3 @@ static void (* const __isr_vector[])(void) = {
 #endif
 
 };
-

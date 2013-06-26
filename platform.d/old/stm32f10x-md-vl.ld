@@ -1,4 +1,4 @@
-/**
+/*
 Copyright (c) 2013 Robert Beam
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -17,41 +17,80 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-**/
-#include <stm32f10x.h>
-#include <stm32f10x_conf.h>
-#include <stdint.h>
-/**
-	This should should contain any required interrupt service routines. ISR
-	methods have a void(void) call signature. That is, they take no arguments
-	and return no values.
-**/
+*/
 
-static volatile uint32_t _DelayCounter = 0;
-static uint32_t TickCount = 0;
 
-/**
-	Example ISR. Handles the SYSTICK interrupt service routine. Automatic names
-	can be found in the platform.d/boot_$(USER_DEVICE_CLASS).c file.
-**/
-void SysTick_Handler()
+ENTRY(Reset_Handler)
+
+MEMORY
 {
-	_DelayCounter--;
-	TickCount++;
-	if (TickCount % 250 == 0)
+	RAM		(rwx)	:	ORIGIN = 0x20000000, LENGTH = 8K
+	FLASH	(rx)	:	ORIGIN = 0x08000000, LENGTH = 128K
+}
+
+_ramStart = ORIGIN(RAM);
+_ramEnd = _ramStart + LENGTH(RAM);
+_stackStart = _ramEnd;
+
+SECTIONS
+{
+	.isr_vector	:
 	{
-		GPIOB->ODR ^= GPIO_Pin_9;
-	}
-}
-
-void Delay(__IO uint32_t numTicks)
-{
-	_DelayCounter = numTicks;
+		KEEP(*(.isr_vector))
+	} > FLASH
 	
-	while (_DelayCounter != 0);
-}
-
-uint32_t GetTickCount()
-{
-	return TickCount;
+	.text		:
+	{
+		*(.text)
+		*(.text.*)
+		*(.rodata)
+		*(.rodata.*)
+		*(.glue_7)
+		*(.glue_7t)
+		*(.vfp11_veneer)
+		*(.v4_bx)
+		*(.ARM.extab* .gnu.linkonce.armextab.*)
+	} > FLASH
+	
+	.ARM.extab	:
+	{
+		*(.ARM.extab* .gnu.linkonce.armextab.*)
+	} > FLASH
+	
+	.ARM.exidx	:
+	{
+		*(.ARM.exidx* .gnu.linkonc.armexidx.*)
+	} > FLASH
+	
+	. = ALIGN(4);
+	_staticDataInit = .;
+	
+	/* Static non-zero init data */
+	.data	:	AT(_staticDataInit)
+	{
+		*(.data)
+		*(.data.*)
+	} > RAM
+	
+	_staticDataAddr = ADDR(.data);
+	_staticDataLength = SIZEOF(.data);
+	
+	/* Static zero init data */
+	.bss BLOCK(4)	:
+	{
+		*(.bss)
+		*(.bss.*)
+		*(COMMON)
+	} > RAM
+	
+	_staticZeroAddr = ADDR(.bss);
+	_staticZeroLength = SIZEOF(.bss);
+	
+	/DISCARD/		:
+	{
+		*(.debug)
+		*(.debug*)
+		*(.comment)
+		*(.comment*)
+	}
 }

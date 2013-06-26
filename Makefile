@@ -18,46 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# @section User variables
-USER_PROJECT_NAME		= gcc-arm-stm32f10x
-USER_DEVICE_CLASS		= stm32f10x-md-vl
-
-# @section User defines
-USER_C_DEFINES			=
-USER_ASM_DEFINES		=
-USER_CXX_DEFINES		=
-
-# @section User paths
-# @note All paths should end with a directory seperator (/)
-USER_INCLUDE_PATH		= ./inc/
-USER_LIBRARY_PATH		=
-USER_LIBRARIES			=
-BUILD_PATH				= ./build/
-OUTPUT_PATH				= ./bin/
-INCLUDE_LIBC			= 1
-# Set to 1 to link against librdimon.a
-# Set to 0 to link against libnosys.a
-LIBC_USE_RDIMON			= 0
-
-# @section Device firmware package info
-STM_PERIPH_DRIVER_PATH	= ../Discovery/
-STM_PERIPH_DRIVER_FILES	= RCC I2C PWR GPIO EXTI
-STM_DISCOVERY_FILES		= 1
-ST_LINK_CLI_PATH		= "C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility\st-link_cli.exe"
-
-# @section User source path
-USER_C_FILES			= ./src/main.c ./src/isr.c
-USER_CXX_FILES			=
-USER_ASM_FILES			=
-
-DEBUG_BUILD				= 1
-# End of user variables
+# Include user configuration data
+-include ./device.conf
 
 # Include platform dependent variables
 -include ./platform.d/$(USER_DEVICE_CLASS)/Makefile
 
 # @section Build variables
-TARGET			= arm-none-eabi-
+TARGET			= $(TOOLCHAIN_ROOT_PATH)arm-none-eabi-
 C_COMPILER		= $(TARGET)gcc
 CXX_COMPILER	= $(TARGET)g++
 ASM_COMPILER	= $(TARGET)g++ -x assembler-with-cpp
@@ -130,8 +98,14 @@ clean:
 
 .PHONY: download
 download: $(OUTPUT_PATH)$(USER_PROJECT_NAME).hex
-	$(ST_LINK_CLI_PATH) -Q -c SWD -P $< -V -Rst -Run
+	$(DEVICE_PROGRAM_COMMAND) $<
+	#$(ST_LINK_CLI_PATH) -Q -c SWD -P $< -V -Rst -Run
 
+.PHONY: start-openocd
+start-openocd:
+	$(START_DEBUG_COMMAND)
+	
+	
 debug:
 	@echo $(LIBRARY_PATH)
 	@echo $(LIBS)
