@@ -1,0 +1,6 @@
+Further investigate CMake viability for build system.
+	A CMake build system seems viable.
+	A significant amount of work is required to bring it to comparable status, but seems like it has lower barriers to maintainence and change.
+Create tests for cmake operations
+Create custom functions to add source files and peripheral drivers.
+Add rules to migrate debug info to seperate file ala DebugFission: http://stackoverflow.com/questions/866721/how-to-generate-gcc-debug-symbol-outside-the-build-target

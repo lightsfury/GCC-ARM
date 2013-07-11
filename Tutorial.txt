@@ -1,0 +1,38 @@
+================================================================================
+===================== Using the GCC ARM project template =======================
+================================================================================
+
+This tutorial will cover using the GCC ARM project template for simple
+development. I intend to briefly show how each of the pieces work and how they
+interact.
+
+For this tutorial, our target platform shall be the STM32vldiscovery board.
+This board features an STM32F100 Cortex-M3 processor with 8kB of RAM and 128kB
+of FLASH in a single bank. Since we have a board configuration for an
+stm32vldiscovery, we wont need the specifics of the board.
+
+Our first step will be to modify the device.conf file for our specific board.
+The file should be well commented, but these are the important directives:
+
+TOOLCHAIN_ROOT_PATH: Path to the ARM cross compiler toolchain.
+
+WINDOWS_SHELL: For Windows users NOT using Cygwin or Bash, this should be 1. In
+all other cases, this should be 0.
+
+USER_CONFIG_TARGET: A space delimited list of the required configuration files.
+
+INCLUDE_LIBC: Instruct the linker to implicitly link against libc.
+
+LIBC_USE_RDIMON: Instruct the linker to use rdimon for syscall implementation.
+
+VENDOR_LIB_PATH: Path to the vendor specific peripheral libraries.
+
+VENDOR_*: Used to configure additional vendor specific options. Notable example:
+VENDOR_USE_PERIPH_LIB: Request the vendor library be compiled.
+VENDOR_LIBS_NEEDED: Specify the vendor library features you want compiled.
+
+OPENOCD_PATH: Path to the OpenOCD server binary for programming and debugging.
+
+DEBUG_LEVEL: Level of debugging information and optimizations available in the
+compiled executable.
+
