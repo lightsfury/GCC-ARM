@@ -1,6 +1,10 @@
 Further investigate CMake viability for build system.
 	A CMake build system seems viable.
 	A significant amount of work is required to bring it to comparable status, but seems like it has lower barriers to maintainence and change.
-Create tests for cmake operations
+	The majority of work for the CMake build system is done.
+Create tests for cmake operations.
+	Increase test coverage.
 Create custom functions to add source files and peripheral drivers.
+	Vendor peripheral driver now available with VENDOR_FIRMWARE_TARGET.
+	Consider changing firmware target to all or none of available features.
 Add rules to migrate debug info to seperate file ala DebugFission: http://stackoverflow.com/questions/866721/how-to-generate-gcc-debug-symbol-outside-the-build-target

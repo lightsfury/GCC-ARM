@@ -21,18 +21,30 @@ function(AddBinary _target)
 	add_executable(${_target} ${_files} ${GCC_ARM_STARTUP_FILES})
 	
 	if(VENDOR_FIRMWARE_TARGET)
+		DebugOutput("AddBinary: Linking against vendor firmware '${VENDOR_FIRMWARE_TARGET}'.")
 		target_link_libraries(${_target} ${VENDOR_FIRMWARE_TARGET})
 	endif()
 	
 	if(LIBC_SYSCALL_IMPL)
+		DebugOutput("AddBinary: Linking against specified syscall implementor '${LIBC_SYSCALL_IMPL}'.")
 		target_link_libraries(${_target} ${LIBC_SYSCALL_IMPL})
 	endif()
 	
 	if(OPENOCD_SERVER_PATH)
-		add_custom_target(download_${_target} "${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" "-f${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "gcc_arm_flash ${_target}.elf" -c "shutdown" DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
+		DebugOutput("AddBinary: Creating download target for '${_target}'.")
+		add_custom_target(download_${_target}
+			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" "-f${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "gcc_arm_flash ${_target}.elf" -c "shutdown"
+			DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 	endif()
 	
+	add_custom_command(TARGET ${_target} POST_BUILD
+		COMMAND "arm-none-eabi-objcopy" "--only-keep-debug" "${_target}" "${_target}.debug"
+		COMMAND "arm-none-eabi-objcopy" "--strip-debug" "--add-gnu-debuglink=${_target}.debug" "${_target}" "${_target}.bin"
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
+	
 	# @todo Split debugging information
+	# http://stackoverflow.com/questions/866721/how-to-generate-gcc-debug-symbol-outside-the-build-target
+	# http://stackoverflow.com/questions/5278444/adding-a-custom-command-with-the-file-name-as-a-target
 	
 endfunction()
 
