@@ -4,6 +4,8 @@ message(STATUS "Loading built-in configuration for STM32vldiscovery boards")
 include(GCCARMParseDebugLevel)
 include(GCCARMBuildFileList)
 
+#! @section Generic vendor/discovery line options
+
 # Board specific options
 option(STM_USE_PERIPH_DRIVERS "Use the STM peripheral driver library." ON)
 option(STM_INCLUDE_DISCOVERY_FILES "Include the STM discovery driver files." ON)
@@ -44,7 +46,7 @@ set(VENDOR_C_FLAGS -DSTM32F10X_MD_VL)
 set(VENDOR_CXX_FLAGS -DSTM32F10X_MD_VL)
 
 set(VENDOR_LINK_SCRIPT "config/board/stm32vldiscovery/link.ld")
-set(VENDOR_BOOT_SCRIPT "config/board/stm32vldiscovery/boot.c")
+set(VENDOR_BOOT_SCRIPT "config/common/boot.c")
 set(VENDOR_ISR_VECTOR  "config/vendor/ST/STM32F10x/isr_vector.c")
 set(VENDOR_OPENOCD_SCRIPT "config/board/stm32vldiscovery/openocd.cfg")
 
@@ -84,7 +86,7 @@ if(STM_USE_PERIPH_DRIVERS)
 			FILES "STM32vldiscovery")
 	endif()
 	
-	add_library(STMFirmware STATIC ${CMAKE_SOURCE_DIR}/config/board/stm32vldiscovery/libSTMFirmware ${_STM_PERIPH_FILES})
+	add_library(STM32vlFirmware STATIC "${CMAKE_SOURCE_DIR}/config/board/stm32vldiscovery/libSTMFirmware" ${_STM_PERIPH_FILES})
 	
-	set(VENDOR_FIRMWARE_TARGET STMFirmware)
+	set(VENDOR_FIRMWARE_TARGET STM32vlFirmware)
 endif()

@@ -7,7 +7,7 @@ include(GCCARMBuildFileList)
 
 set(VALID_DEBUG_LEVELS
 	Assert
-	DebugOpt
+#	DebugOpt
 	SizeOpt)
 
 BuildFileList(DEBUG_LEVEL_INCLUDES "DebugLevel/" ""

@@ -21,8 +21,8 @@ SOFTWARE.
 
 MEMORY
 {
-	RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 8k
-	FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 128k
+	RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 48k
+	FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 256k   
 }
 
 INCLUDE "common/sections.ld"

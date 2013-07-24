@@ -26,20 +26,20 @@ function(AddBinary _target)
 	endif()
 	
 	if(LIBC_SYSCALL_IMPL)
-		DebugOutput("AddBinary: Linking against specified syscall implementor '${LIBC_SYSCALL_IMPL}'.")
+		DebugOutput("AddBinary: Linking against specified syscall implementor(s) '${LIBC_SYSCALL_IMPL}'.")
 		target_link_libraries(${_target} ${LIBC_SYSCALL_IMPL})
 	endif()
 	
 	if(OPENOCD_SERVER_PATH)
 		DebugOutput("AddBinary: Creating download target for '${_target}'.")
 		add_custom_target(download_${_target}
-			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" "-f${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "gcc_arm_flash ${_target}.elf" -c "shutdown"
+			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -c "program ${_target}"
 			DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 	endif()
 	
 	add_custom_command(TARGET ${_target} POST_BUILD
-		COMMAND "arm-none-eabi-objcopy" "--only-keep-debug" "${_target}" "${_target}.debug"
-		COMMAND "arm-none-eabi-objcopy" "--strip-debug" "--add-gnu-debuglink=${_target}.debug" "${_target}" "${_target}.bin"
+		COMMAND "arm-none-eabi-objcopy" "--only-keep-debug" "${_target}.elf" "${_target}.debug"
+		COMMAND "arm-none-eabi-objcopy" "--strip-debug" "--add-gnu-debuglink=${_target}.debug" "${_target}.elf" "${_target}"
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 	
 	# @todo Split debugging information

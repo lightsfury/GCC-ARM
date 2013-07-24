@@ -3,3 +3,5 @@
 *-o
 /bin
 /build
+
+/config/vendor/ST/STM32F30x/*.obj
