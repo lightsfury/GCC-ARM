@@ -28,12 +28,14 @@ GNU compatible make
 * Mac OS X: Installed with X-Code or available through Fink/MacPorts.
 * Linux: Installed with any GNU compiler, may already be installed.
 
-Programming utility/OpenOCD
-* http://openocd.sourceforge.net/
+== 1.A.i. Optional dependencies ==
 
 USB driver
 * Windows: http://sourceforge.net/projects/libwdi/files/zadig/
 * Mac OS X/Linux: TODO
+
+Programming utility/OpenOCD
+* http://openocd.sourceforge.net/
 
 === 2. License ===
 
@@ -44,3 +46,4 @@ specified in License.txt.
 Date        Author              Changes
 2013/6/25   RJB                 Initial document
 2013/7/4    RJB                 Updated dependencies
+2013/7/23   RJB                 Updated dependencies
