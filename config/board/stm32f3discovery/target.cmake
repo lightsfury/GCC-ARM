@@ -45,7 +45,6 @@ set(VENDOR_C_FLAGS "-DSTM32F30X")
 set(VENDER_CXX_FLAGS "-DSTM32F30X")
 
 set(VENDOR_LINK_SCRIPT "config/board/stm32f3discovery/link.ld")
-set(VENDOR_BOOT_SCRIPT "config/common/boot.c")
 set(VENDOR_ISR_VECTOR "config/vendor/ST/STM32F30x/isr_vector.c")
 set(VENDOR_OPENOCD_SCRIPT "config/board/stm32f3discovery/openocd.cfg")
 
@@ -86,7 +85,7 @@ if(STM_USE_PERIPH_DRIVERS)
 				"stm32f3_discovery_lsm303dlhc")
 	endif()
 	
-	add_library(STM32F3Firmware STATIC "${CMAKE_SOURCE_DIR}/config/board/stm32f3discovery/libSTMFirmware" ${_STM_PERIPH_FILES})
+	add_library(STM32F3Firmware STATIC "${CMAKE_SOURCE_DIR}/config/board/stm32f3discovery/src/libSTMFirmware" ${_STM_PERIPH_FILES})
 	
 	set(VENDOR_FIRMWARE_TARGET STM32F3Firmware)
 endif()

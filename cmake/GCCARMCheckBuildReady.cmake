@@ -1,5 +1,7 @@
 if(NOT GCC_ARM_CHECK_BUILD_READY)
 
+include(GCCARMDebugOutput)
+
 if(NOT DEFINED CPU_TYPE)
 	message(SEND_ERROR "The CPU type is not set. Please set the proper configuration targets.")
 endif()
@@ -13,7 +15,11 @@ if(NOT DEFINED VENDOR_LINK_SCRIPT)
 endif()
 
 if(NOT DEFINED VENDOR_BOOT_SCRIPT)
-	message(SEND_ERROR "The boot script is not set. Please set the proper configuration targets.")
+	DebugOutput("CheckBuildReady: Boot script not specified. Using default.")
+	set(BOOT_SCRIPT "config/common/boot.c")
+else()
+	DebugOutput("CheckBuildReady: Using specified device boot script '${VENDOR_BOOT_SCRIPT}'.")
+	set(BOOT_SCRIPT ${VENDOR_BOOT_SCRIPT})
 endif()
 
 if(NOT DEFINED VENDOR_ISR_VECTOR)
@@ -26,11 +32,11 @@ else()
 	set(VENDOR_LINK_SCRIPT "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
 endif()
 
-if(NOT EXISTS VENDOR_BOOT_SCRIPT)
-	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_BOOT_SCRIPT}")
-		message(SEND_ERROR "Cannot find the boot script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent path: ${CMAKE_SOURCE_DIR}/${VENDOR_BOOT_SCRIPT}.")
+if(NOT EXISTS BOOT_SCRIPT)
+	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${BOOT_SCRIPT}")
+		message(SEND_ERROR "Cannot find the boot script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent path: ${BOOT_SCRIPT}.")
 	else()
-		set(VENDOR_BOOT_SCRIPT "${CMAKE_SOURCE_DIR}/${VENDOR_BOOT_SCRIPT}")
+		set(BOOT_SCRIPT "${CMAKE_SOURCE_DIR}/${BOOT_SCRIPT}")
 	endif()
 endif()
 
@@ -52,7 +58,7 @@ if(NOT LIBC_AUTO_LINK)
 	set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -nodefaultlibs")
 endif()
 
-set(GCC_ARM_STARTUP_FILES ${VENDOR_BOOT_SCRIPT} ${VENDOR_ISR_VECTOR})
+set(GCC_ARM_STARTUP_FILES ${BOOT_SCRIPT} ${VENDOR_ISR_VECTOR})
 
 if(OPENOCD_SERVER_PATH)
 	DebugOutput("CheckBuildReady: Adding brick retrieval target")
