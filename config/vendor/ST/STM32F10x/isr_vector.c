@@ -178,8 +178,8 @@ static void (* const __isr_vector[])(void) = {
 	DMA2_Channel5_IRQHandler,
 	0, 0, 0, 0, 0, 0, 0, 0,	0,
 #if defined (STM32F10X_LD_VL) || (defined STM32F10X_MD_VL) 
-	[0x1CC/4] = 0xF108F85F
+	[0x1CC/4] = (void (*)(void))0xF108F85F
 #elif defined (STM32F10X_HD_VL)
-	[0x1E0/4] = 0xF108F85F
+	[0x1E0/4] = (void (*)(void))0xF108F85F
 #endif
 };
