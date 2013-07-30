@@ -33,7 +33,7 @@ function(AddBinary _target)
 	if(OPENOCD_SERVER_PATH)
 		DebugOutput("AddBinary: Creating download target for '${_target}'.")
 		add_custom_target(download_${_target}
-			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -c "program ${_target}"
+			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -c "program ${_target} verify reset"
 			DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 	endif()
 	

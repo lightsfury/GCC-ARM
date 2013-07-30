@@ -53,9 +53,9 @@ int main()
 		Delay(50);
 #elif defined(STM32F10X_MD_VL)
 		STM32vldiscovery_LEDToggle(LED3);
-		Delay(50);
+		Delay(100);
 		STM32vldiscovery_LEDToggle(LED4);
-		Delay(50);
+		Delay(100);
 #endif
 	}
 }
