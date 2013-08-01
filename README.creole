@@ -40,7 +40,8 @@ The template project and makefiles are licensed under the MIT License as
 specified in License.txt.
 
 === 3. Revisions ===
-Date        Author              Changes
-2013/6/25   RJB                 Initial document
-2013/7/4    RJB                 Updated dependencies
-2013/7/23   RJB                 Updated dependencies
+|=Date      |=Author            |=Changes
+|2013/6/25  |RJB                |Initial document
+|2013/7/4   |RJB                |Updated dependencies
+|2013/7/23  |RJB                |Updated dependencies
+|2013/7/31  |RJB                |Tweaked revisions section
