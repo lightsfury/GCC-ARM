@@ -41,6 +41,7 @@ set(OPENOCD_CONFIG_TARGETS "-fboard/stm32vldiscovery.cfg")
 
 set(CPU_TYPE "cortex-m3")
 set(CODE_TYPE "thumb")
+set(CPU_FLOAT_ABI "soft")
 
 set(VENDOR_C_FLAGS -DSTM32F10X_MD_VL)
 set(VENDOR_CXX_FLAGS -DSTM32F10X_MD_VL)

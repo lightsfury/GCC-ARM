@@ -1,21 +1,17 @@
 if(NOT GCC_ARM_PARSE_DEBUG_LEVEL_INCLUDED)
+	include(GCCARMBuildFileList)
 
-#! @todo Decide on debug level delegation method
-# Could use BuildFileList with validation
+	set(VALID_DEBUG_LEVELS
+		Assert
+	#	DebugOpt
+		SizeOpt)
 
-include(GCCARMBuildFileList)
+	BuildFileList(DEBUG_LEVEL_INCLUDES "DebugLevel/" ""
+		FILES ${DEBUG_LEVEL} VALIDATE ${VALID_DEBUG_LEVELS})
 
-set(VALID_DEBUG_LEVELS
-	Assert
-#	DebugOpt
-	SizeOpt)
+	foreach(level ${DEBUG_LEVEL_INCLUDES})
+		include(${level})
+	endforeach()
 
-BuildFileList(DEBUG_LEVEL_INCLUDES "DebugLevel/" ""
-	FILES ${DEBUG_LEVEL} VALIDATE ${VALID_DEBUG_LEVELS})
-
-foreach(level ${DEBUG_LEVEL_INCLUDES})
-	include(${level})
-endforeach()
-
-set(GCC_ARM_PARSE_DEBUG_LEVEL_INCLUDED 1)
+	set(GCC_ARM_PARSE_DEBUG_LEVEL_INCLUDED 1)
 endif()

@@ -34,6 +34,7 @@ set(OPENOCD_SERVER_PATH "" CACHE FILEPATH "Path to the OpenOCD server executable
 set(DEBUG_LEVEL "Assert;SizeOpt" CACHE STRING "Specifies the presence of assertions and optimizations. Please seperate IDs with a semicolon.")
 option(GCC_ARM_RUN_CMAKE_TESTS "Run the test suite for the CMake helper functions." OFF)
 option(GCC_ARM_CMAKE_DEBUG_MESSAGES "Display debug messages from CMake helper functions." OFF)
+set(ECLIPSE_PROJECT_NAME "GCC ARM" CACHE STRING "Project name used to create Eclipse debugging configuration files.")
 
 if(GCC_ARM_RUN_CMAKE_TESTS)
 	message(STATUS "Running CMake tests")

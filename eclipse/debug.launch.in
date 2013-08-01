@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.cdt.debug.gdbjtag.launchConfigurationType">
-	<stringAttribute key="bad_container_name" value="\gcc-arm-eclipse\LEDTest"/>
 	<intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.delay" value="3"/>
 	<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doHalt" value="true"/>
 	<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doReset" value="true"/>
@@ -25,16 +24,15 @@
 	<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useProjBinaryForImage" value="true"/>
 	<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useProjBinaryForSymbols" value="true"/>
 	<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useRemoteTarget" value="true"/>
-	<stringAttribute key="org.eclipse.cdt.debug.mi.core.DEBUG_NAME" value="C:\Stuff\gcc-arm\bin\arm-none-eabi-gdb.exe"/>
-	<stringAttribute key="org.eclipse.cdt.debug.mi.core.commandFactory" value="Standard (Windows)"/>
+	<stringAttribute key="org.eclipse.cdt.debug.mi.core.DEBUG_NAME" value="${GCC_ARM_GDB_PATH}"/>
 	<stringAttribute key="org.eclipse.cdt.debug.mi.core.protocol" value="mi"/>
 	<booleanAttribute key="org.eclipse.cdt.debug.mi.core.verboseMode" value="false"/>
-	<stringAttribute key="org.eclipse.cdt.dsf.gdb.DEBUG_NAME" value="C:\Stuff\gcc-arm\bin\arm-none-eabi-gdb.exe"/>
+	<stringAttribute key="org.eclipse.cdt.dsf.gdb.DEBUG_NAME" value="${GCC_ARM_GDB_PATH}"/>
 	<booleanAttribute key="org.eclipse.cdt.dsf.gdb.UPDATE_THREADLIST_ON_SUSPEND" value="false"/>
 	<intAttribute key="org.eclipse.cdt.launch.ATTR_BUILD_BEFORE_LAUNCH_ATTR" value="2"/>
 	<stringAttribute key="org.eclipse.cdt.launch.COREFILE_PATH" value=""/>
-	<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="bin\LEDTest"/>
-	<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="gcc-arm-eclipse"/>
+	<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="bin\${_target}"/>
+	<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="${ECLIPSE_PROJECT_NAME}"/>
 	<booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
 	<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="org.eclipse.cdt.core.default.config.1"/>
 	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">

@@ -40,6 +40,7 @@ set(OPENOCD_CONFIG_TARGETS "-fboard/stm32f3discovery.cfg")
 
 set(CPU_TYPE "cortex-m4")
 set(CODE_TYPE "thumb")
+set(CPU_FLOAT_ABI "hard")
 
 set(VENDOR_C_FLAGS "-DSTM32F30X")
 set(VENDER_CXX_FLAGS "-DSTM32F30X")
