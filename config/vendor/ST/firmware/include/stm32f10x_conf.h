@@ -19,49 +19,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
 
-#if defined(_GCC_ARM_VENDOR_CHIP_INCLUDE)
-	#include <_GCC_ARM_VENDOR_CHIP_INCLUDE>
-#endif
+#ifndef _STM32F10X_CONF_H_
+#define _STM32F10X_CONF_H_
 
 #include <stdint.h>
-#include <string.h>
+/**
+	This file serves
+	@todo Comment header
+**/
 
-#ifndef _WEAK_SYMBOL_
-	#define _WEAK_SYMBOL_ __attribute__((weak))
-#endif // _WEAK_SYMBOL_
+#ifdef USE_STM_VL_DISCOVERY_FILES
+	/**
+		The STM32vl discovery files require that the conf.h file include the
+		neccesary header files.
+	**/
+	//! Poorly named header. This is resolved in newer firmware packages.
+	#include <misc.h>
+	#include <stm32f10x_exti.h>
+	#include <stm32f10x_gpio.h>
+	#include <stm32f10x_rcc.h>
+	#include <stm32f10x_pwr.h>
+	#include <stm32vldiscovery.h>
+#endif // USE_STM_VL_DISCOVERY_FILES
 
-//! Intentional no-op function
-void _WEAK_SYMBOL_ __libc_init_array(void) { /* no-op */ }
+#ifdef _GCC_ARM_USE_ASSERTIONS_
+    /**
+	    The STM peripheral library makes extensive use of the user-defined
+        assert_param macro. Such extensive use makes failure identification much
+        simpler.
+    **/
+    #define assert_param(e) {if (!(e)) {               \
+        assert_failed((uint8_t*)__FILE__, __LINE__); } }
+    
+    void assert_failed(uint8_t* file, uint32_t lineNumber);
+#else
+    /* No-op assertion */
+    #define assert_param(...) 
+#endif // _GCC_ARM_USE_ASSERTIONS_
 
-extern uint32_t _staticDataSource,
-                _staticDataStart,
-                _staticDataLength,
-                _staticZeroStart,
-                _staticZeroLength;
+#endif // _STM32F10X_CONF_H_
 
-#ifdef _GCC_ARM_SYSTEM_INIT
-	extern void SystemInit();
-#endif // _GCC_ARM_SYSTEM_INIT
-
-//! User entry point
-extern int main(void);
-
-void Reset_Handler(void)
-{
-	memcpy(&_staticDataStart, &_staticDataSource, (size_t)&_staticDataLength);
-	memset(&_staticZeroStart, 0, (size_t)&_staticZeroLength);
-	
-	// If requested, call a system initializer
-	#ifdef _GCC_ARM_SYSTEM_INIT
-	SystemInit();
-	#endif // _GCC_ARM_SYSTEM_INIT
-	
-	// Call the libc initializer
-	__libc_init_array();
-	
-	// User entry point
-	main();
-	
-	// Tail-call loop
-	Reset_Handler();
-}

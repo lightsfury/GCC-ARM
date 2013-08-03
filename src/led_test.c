@@ -139,13 +139,24 @@ void debugMessage(char* msg)
 	}
 }
 
+__attribute__((naked))
 void HardFault_Handler()
 {
 	static char msg[80];
 	
+	/*
 	sprintf(msg, "  HKSR: 0x%08x\n", (unsigned int)(SCB->HFSR));
 	debugMessage("HardFault_Handler");
 	debugMessage(msg);
+	// */
 	
 	while (1) asm("nop");
+}
+
+__attribute__((naked))
+void BusFault_Handler()
+{
+	volatile static uint32_t* CFSR = 0xE000ED28;
+	
+	asm("BKPT #0");
 }

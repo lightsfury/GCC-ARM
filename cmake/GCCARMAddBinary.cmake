@@ -24,15 +24,15 @@ if(NOT GCC_ARM_ADD_BINARY_INCLUDED)
 			target_link_libraries(${_target} ${VENDOR_FIRMWARE_TARGET})
 		endif()
 		
-		if(LIBC_SYSCALL_IMPL)
-			DebugOutput("AddBinary: Linking against specified syscall implementor(s) '${LIBC_SYSCALL_IMPL}'.")
-			target_link_libraries(${_target} ${LIBC_SYSCALL_IMPL})
+		if(GCC_ARM_LIBC_SYSCALL_IMPL)
+			DebugOutput("AddBinary: Linking against specified syscall implementor(s) '${GCC_ARM_LIBC_SYSCALL_IMPL}'.")
+			target_link_libraries(${_target} ${GCC_ARM_LIBC_SYSCALL_IMPL})
 		endif()
 		
-		if(OPENOCD_SERVER_PATH)
+		if(GCC_ARM_OPENOCD_SERVER_PATH)
 			DebugOutput("AddBinary: Creating download target for '${_target}'.")
 			add_custom_target(download_${_target}
-				"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -c "program ${_target} verify reset"
+				"${GCC_ARM_OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -c "program ${_target} verify reset"
 				DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 		endif()
 		
@@ -40,6 +40,10 @@ if(NOT GCC_ARM_ADD_BINARY_INCLUDED)
 		configure_file(
 			"${CMAKE_SOURCE_DIR}/eclipse/debug.launch.in"
 			"${CMAKE_BINARY_DIR}/eclipse/Debug ${_target}.launch")
+		
+		configure_file(
+			"${CMAKE_SOURCE_DIR}/eclipse/debug2.launch.in"
+			"${CMAKE_BINARY_DIR}/eclipse/Debug2 ${_target}.launch")
 		
 		DebugOutput("AddBinary: Splitting debug info to a .debug file.")
 		add_custom_command(TARGET ${_target} POST_BUILD

@@ -4,7 +4,7 @@
 		<listEntry value="org.eclipse.ui.externaltools.launchGroup"/>
 	</listAttribute>
 	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
-	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${OPENOCD_SERVER_PATH}"/>
+	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${GCC_ARM_OPENOCD_SERVER_PATH}"/>
 	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="${OPENOCD_ECLIPSE_PARAMS}"/>
 	<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="./"/>
 </launchConfiguration>

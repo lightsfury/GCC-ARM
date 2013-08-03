@@ -31,14 +31,16 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 	endif()
 
 	# Ensure the linker script exists on Disk
-	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
-		message(SEND_ERROR "Cannot find the linker script. The path should be relative to CMAKE_SOURCE_DIR.\nCurrent path: ${VENDOR_LINK_SCRIPT}.")
-	else()
-		set(VENDOR_LINK_SCRIPT "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
+	if(NOT EXISTS "${VENDOR_LINK_SCRIPT}")
+		if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
+			message(SEND_ERROR "Cannot find the linker script. The path should be relative to CMAKE_SOURCE_DIR.\nCurrent path: ${VENDOR_LINK_SCRIPT}.")
+		else()
+			set(VENDOR_LINK_SCRIPT "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
+		endif()
 	endif()
 
 	# Ensure the boot script exists on Disk
-	if(NOT EXISTS BOOT_SCRIPT)
+	if(NOT EXISTS ${BOOT_SCRIPT})
 		if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${BOOT_SCRIPT}")
 			message(SEND_ERROR "Cannot find the boot script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent path: ${BOOT_SCRIPT}.")
 		else()
@@ -47,7 +49,7 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 	endif()
 
 	# Ensure the ISR vector exists on Disk
-	if(NOT EXISTS VENDOR_ISR_VECTOR)
+	if(NOT EXISTS ${VENDOR_ISR_VECTOR})
 		if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_ISR_VECTOR}")
 			message(SEND_ERROR "Cannot find the ISR vector definition. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent path: ${CMAKE_SOURCE_DIR}/${VENDOR_ISR_VECTOR}.")
 		else()
@@ -68,8 +70,13 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfloat-abi=${CPU_FLOAT_ABI}")
 	endif()
 	
+	if(CPU_FLOAT_TYPE)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfpu=${CPU_FLOAT_TYPE}")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=${CPU_FLOAT_TYPE}")
+	endif()
+	
 	# Optionally, disable automatic linking of the default libraries
-	if(NOT LIBC_AUTO_LINK)
+	if(NOT GCC_ARM_AUTO_LINK_LIBC)
 		set(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -nodefaultlibs")
 		set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -nodefaultlibs")
 	endif()
@@ -78,14 +85,20 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 	set(GCC_ARM_STARTUP_FILES ${BOOT_SCRIPT} ${VENDOR_ISR_VECTOR})
 
 	# Optionally, create an OpenOCD de-brick command and create Eclipse OpenOCD launch config file
-	if(OPENOCD_SERVER_PATH)
+	if(GCC_ARM_OPENOCD_SERVER_PATH)
 		DebugOutput("CheckBuildReady: Adding brick retrieval target")
 		add_custom_target(bricked-it
-			"${OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -f "${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "i_bricked_it" VERBATIM)
+			"${GCC_ARM_OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -f "${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "i_bricked_it" VERBATIM)
 		set(OPENOCD_ECLIPSE_PARAMS "${OPENOCD_CONFIG_TARGETS}")
 		configure_file(
 			${CMAKE_SOURCE_DIR}/eclipse/OpenOCD.launch.in
 			${CMAKE_BINARY_DIR}/eclipse/OpenOCD.launch)
+	endif()
+	
+	if(GCC_ARM_GDB_REQUIRE_DSF)
+		set(GCC_ARM_ECLIPSE_DEBUG_LAUNCHER "dsfLaunchDelegate")
+	elseif(GCC_ARM_GDB_REQUIRE_STANDARD)
+		set(GCC_ARM_ECLIPSE_DEBUG_LAUNCHER "cdiLaunchDelegate")
 	endif()
 
 	# Find the full path to common utilities
