@@ -41,10 +41,6 @@ if(NOT GCC_ARM_ADD_BINARY_INCLUDED)
 			"${CMAKE_SOURCE_DIR}/eclipse/debug.launch.in"
 			"${CMAKE_BINARY_DIR}/eclipse/Debug ${_target}.launch")
 		
-		configure_file(
-			"${CMAKE_SOURCE_DIR}/eclipse/debug2.launch.in"
-			"${CMAKE_BINARY_DIR}/eclipse/Debug2 ${_target}.launch")
-		
 		DebugOutput("AddBinary: Splitting debug info to a .debug file.")
 		add_custom_command(TARGET ${_target} POST_BUILD
 			COMMAND ${GCC_ARM_OBJCOPY_PATH} "--only-keep-debug" "${_target}.elf" "${_target}.debug"
