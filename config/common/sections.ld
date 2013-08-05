@@ -24,7 +24,6 @@ ENTRY(Reset_Handler);
 _ramStart   = ORIGIN(RAM);
 _ramEnd     = _ramStart + LENGTH(RAM);
 _stackStart = _ramEnd;
-PROVIDE(end = _ramStart);
 
 SECTIONS
 {
@@ -79,6 +78,7 @@ SECTIONS
 	
 	_staticZeroStart = ADDR(.bss);
 	_staticZeroLength = SIZEOF(.bss);
+	PROVIDE(end = _staticZeroStart + _staticZeroLength);
 	
 	.gdb_index    :
 	{
