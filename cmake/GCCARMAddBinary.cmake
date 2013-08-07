@@ -29,6 +29,11 @@ if(NOT GCC_ARM_ADD_BINARY_INCLUDED)
 			target_link_libraries(${_target} ${GCC_ARM_LIBC_SYSCALL_IMPL})
 		endif()
 		
+		if(GCC_ARM_AUTO_LINK_LIBC)
+			DebugOutput("AddBinary: Adding work-around for syscall circular references.")
+			target_link_libraries(${_target} gcc c)
+		endif()
+		
 		if(GCC_ARM_OPENOCD_SERVER_PATH)
 			DebugOutput("AddBinary: Creating download target for '${_target}'.")
 			add_custom_target(download_${_target}
@@ -36,10 +41,12 @@ if(NOT GCC_ARM_ADD_BINARY_INCLUDED)
 				DEPENDS ${_target} WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin VERBATIM)
 		endif()
 		
-		DebugOutput("AddBinary: Creating Eclipse debugging config file.")
-		configure_file(
-			"${CMAKE_SOURCE_DIR}/eclipse/debug.launch.in"
-			"${CMAKE_BINARY_DIR}/eclipse/Debug ${_target}.launch")
+		if(GCC_ARM_ECLIPSE_PROJECT_NAME AND GCC_ARM_OPENOCD_SERVER_PATH AND GCC_ARM_GDB_PATH)
+			DebugOutput("AddBinary: Creating Eclipse debugging config file.")
+			configure_file(
+				"${CMAKE_SOURCE_DIR}/eclipse/debug.launch.in"
+				"${CMAKE_BINARY_DIR}/eclipse/Debug ${_target}.launch")
+		endif()
 		
 		DebugOutput("AddBinary: Splitting debug info to a .debug file.")
 		add_custom_command(TARGET ${_target} POST_BUILD

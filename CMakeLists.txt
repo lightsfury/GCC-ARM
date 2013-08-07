@@ -30,7 +30,7 @@ set(GCC_ARM_CONFIGURATION_TARGETS "" CACHE STRING "List of identifiers used to l
 set(GCC_ARM_LIBC_SYSCALL_IMPL "rdimon" CACHE STRING "Library or libraries used to locate syscall emulation/implementation. Please seperate library names with a semicolon (;).")
 set(GCC_ARM_OPENOCD_SERVER_PATH "" CACHE FILEPATH "Absolute path to the OpenOCD server executable.")
 set(GCC_ARM_DEBUG_OPTIONS "Assert;SizeOpt" CACHE STRING "Specify the debug options to use. Debugging information is always generated and place in a seperate .debug file.")
-set(GCC_ARM_ECLIPSE_PROJECT_NAME "GCC ARM" CACHE STRING "Project name used to create Eclipse debugging configuration files.")
+#set(GCC_ARM_ECLIPSE_PROJECT_NAME "GCC ARM" CACHE STRING "Project name used to create Eclipse debugging configuration files.")
 
 option(GCC_ARM_AUTO_LINK_LIBC "Automatically link against the libc implementation." ON)
 option(GCC_ARM_RUN_CMAKE_TESTS "Run the test suite for the CMake helper functions." OFF)

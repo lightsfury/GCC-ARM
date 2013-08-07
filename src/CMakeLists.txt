@@ -1,4 +1,4 @@
 include(GCCARMAddBinary)
 
-AddBinary(min_test minimal)
+AddBinary(MinimalTest minimal)
 AddBinary(LEDTest led_test)

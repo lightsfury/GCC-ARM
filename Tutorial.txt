@@ -1,38 +1,125 @@
-================================================================================
-===================== Using the GCC ARM project template =======================
-================================================================================
+= Using the GCC ARM project template =
 
 This tutorial will cover using the GCC ARM project template for simple
-development. I intend to briefly show how each of the pieces work and how they
-interact.
+development.
 
-For this tutorial, our target platform shall be the STM32vldiscovery board.
-This board features an STM32F100 Cortex-M3 processor with 8kB of RAM and 128kB
-of FLASH in a single bank. Since we have a board configuration for an
-stm32vldiscovery, we wont need the specifics of the board.
+== Setup the build environment ==
+First, we will need to setup our build environment by installing a horde of software.
+You may choose to add the toolchain, make and OpenOCD to your path: http://superuser.com/questions/284342/what-are-path-and-other-environment-variables-and-how-can-i-set-or-use-them
 
-Our first step will be to modify the device.conf file for our specific board.
-The file should be well commented, but these are the important directives:
+GNU compatible toolchain: https://launchpad.net/gcc-arm-embedded
 
-TOOLCHAIN_ROOT_PATH: Path to the ARM cross compiler toolchain.
+CMake 2.8 or newer: http://www.cmake.org
 
-WINDOWS_SHELL: For Windows users NOT using Cygwin or Bash, this should be 1. In
-all other cases, this should be 0.
+GNU compatible make:
+* Windows: http://gnuwin32.sourceforge.net/packages/make.htm
+** Download and install the "Complete Package, except sources" OR the "Binaries" and "Dependencies" packages.
+** MingW and CygWin work as well.
+* MacOS/Linux: Make is installed with all GNU compilers. See your package manager/MacPorts.
 
-USER_CONFIG_TARGET: A space delimited list of the required configuration files.
+OpenOCD: http://openocd.sourceforge.net/
+* Windows: http://www.freddiechopin.info/
+* MacOS/Linux: Building is fairly painless but binaries are available through your package manager/MacPorts.
 
-INCLUDE_LIBC: Instruct the linker to implicitly link against libc.
+OpenOCD does not work with the ST drivers for ST-Link (NOT ST-Link V/2). Please use libusb/WinUSB compatible drivers.
+* Windows: http://sourceforge.net/projects/libwdi/files/zadig/
+* MacOS/Linux: You are already using libusb drivers.
 
-LIBC_USE_RDIMON: Instruct the linker to use rdimon for syscall implementation.
+= Optional =
+The project template includes support for programming and debugging through Eclipse.
+* http://www.eclipse.org
 
-VENDOR_LIB_PATH: Path to the vendor specific peripheral libraries.
+== Setup the project ==
 
-VENDOR_*: Used to configure additional vendor specific options. Notable example:
-VENDOR_USE_PERIPH_LIB: Request the vendor library be compiled.
-VENDOR_LIBS_NEEDED: Specify the vendor library features you want compiled.
+Using CMake is very painless. If you chose to add CMake to your path, open a command line/terminal and type cmake-gui. Otherwise, navigate your Start Menu or equiv and launch "CMake (cmake-gui)".
 
-OPENOCD_PATH: Path to the OpenOCD server binary for programming and debugging.
+From here click "Browse Source..." and navigate to the directory that holds the GCC ARM template project.
 
-DEBUG_LEVEL: Level of debugging information and optimizations available in the
-compiled executable.
+Next, click "Browse Build..." and navigate to the directory where you want to place the build file for the template project. If you intend to use Eclipse, the directories must NOT be nested. That is, one must not contain the other.
 
+Now, click "Configure" and select "Eclipse CDT4 - Unix Makefiles" as the generate and select "Specify toolchain file for cross-compiling". Click "Next". Click "..." and navigate to the project source directory and then to the "config" directory. Now choose the "Toolchain-arm-none-eabi.cmake" file. Click "Finish".
+
+The prcoess should finish with an error. Don't panic, this is expected.
+
+The errors should look like:
+
+CMake Error at cmake/GCCARMCheckBuildReady.cmake:6 (message):
+  The CPU type is not set.  Please set the proper configuration targets.
+Call Stack (most recent call first):
+  CMakeLists.txt:48 (include)
+
+
+CMake Error at cmake/GCCARMCheckBuildReady.cmake:11 (message):
+  The instruction set is not set.  Please set the proper configuration
+  targets.
+Call Stack (most recent call first):
+  CMakeLists.txt:48 (include)
+
+
+CMake Error at cmake/GCCARMCheckBuildReady.cmake:16 (message):
+  The linker script is not set.  Please set the proper configuration targets.
+Call Stack (most recent call first):
+  CMakeLists.txt:48 (include)
+
+
+CMake Error at cmake/GCCARMCheckBuildReady.cmake:30 (message):
+  The ISR table definition is not set.  Please set the proper configuration
+  targets.
+Call Stack (most recent call first):
+  CMakeLists.txt:48 (include)
+
+If you have additional errors, verify the steps you've made so far.
+
+To use the template project, we need to set the GCC_ARM_CONFIGURATION_TARGETS.
+For the STM32 vl Discovery board, use a value of "board/stm32vldiscovery".
+For the STM32F3 Discovery board, use a value of "board/stm32f3discovery".
+For future reference, the supported configuration targets can be found in the "config" directory. The GCC_ARM_CONFIGURATION_TARGETS variable is the intermediate path between the "config" directory and the device's "target.cmake" file.
+
+Now that we've choosen a device configuration, click "Configure" once more.
+
+Several options should appear with a red background.
+For ST products, the new options will include:
+STM_USE_PERIPH_DRIVER: This indicate that your project will use the ST provided peripheral driver firmware package.
+STM_PERIPH_DRIVER_PATH: This is the absolute path to the ST provided peripheral driver firmware package.
+STM_PERIPH_DISCOVERY_FILES: This indicates that your project will use the discovery board-specific discovery features. This option is ignored if STM_USE_PERIPH_DRIVER is not used.
+STM_USE_USB_DRIVER: On devices with USB support, this option indicate that the project will use the ST provided USB interface driver.
+
+The template project can create Eclipse debugger launchers for your project. To create the launchers, you need to set GCC_ARM_OPENOCD_SERVER_PATH to the absolute path to the OpenOCD binary.
+
+Sadly, there are not many good tutortials on setting up Eclipse for remote hardware debugging. Hussam Al-Hertani has a good tutortial on setting up a project, Eclipse and debugging for the STMF0 discovery board. The second part of the tutorial discusses setting up Eclipse for remote hardware debugging. The part we need is at the end and involves the Eclipse plugins required for remote hardware debugging: http://hertaville.com/2012/06/25/using-the-eclipse-ide-gcc-arm/
+
+Now that everything is configured, click "Generate". This step may fail if you have STM_USE_PERIPH_DRIVER but STM_PERIPH_DRIVER_PATH does not point to the proper firmware package. Check the path and ensure that the firmware package is the correct one for your device.
+
+Initially, the template project creates 2 binaries: LEDTest and MinimalTest.
+The LEDTest project cycles the user LEDs on your device. The MinimalTest calls an empty main function, doing a whole lot of nothing.
+
+To start a new project modify the "src/CMakeLists.txt" file. There are numerous tutortials on using CMake for development. In our case, the template project provides an AddBinary command that carries a fair bit of the weight for creating embedded binaries. The command has a similar interface and similar side-effects to "add_executable" (http://cmake.org/cmake/help/v2.8.8/cmake.html#command:add_executable ).
+
+Lets say we want to create a new binary for our device. To do this, we might write:
+
+AddBinary(SomeNewBinary my_new_main some_other_file and_another_file)
+
+This would create a binary named SomeNewBinary for our device.
+One major difference to add_executable is that AddBinary creates additional commands that split SomeNewBinary.elf (the output file from add_executable) into SomeNewBinary (our binary without debugging information) and SomeNewBinary.debug (the file that contains the debugging information). The splitting process adds information that allows GDB to automatically find the debugging information. In addition, a command line make target named "download_SomeNewBinary" is created that uses OpenOCD to program SomeNewBinary to our device.
+
+== Build the project ==
+
+Now that we configured and generated our project, we can build it. We can build a project generated for "Eclipse CDT4 - Unix Makefiles" the same way we would build any other makefile project. The build process can a fair bit of time (http://xkcd.com/303/) depending on how much code needs to be compiled. Unless you are compiling an RTOS, this process should take at most a few minutes.
+
+In the likely event that you poke some errors into your project, GCC will spew forth some rather indecipherable error messages. At this point, Eclipse makes a wonderful companion so that we don't have to manually decipher those ugly error messages.
+
+To get our project working with Eclipse, we need to import the project. With Eclipse open, navigate to "File" > "Import..." and then to "General" > "Existing Projects into Workspace". Click "Browse..." and navigate to the project build directory. Make sure the options "Search for nested projects" and "Copy projects into workspace" are NOT checked and click "Finish".
+
+Some versions of Eclipse don't like the linked resources that CMake places in the project settings. If you get an error like "Error processing changed links in project description file.", you will need to set the CMake option "CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES" to off (0/unchecked). After you make the change, configure and generate through CMake, you can close the Eclipse import project window by clicking "Cancel" and refresh the Eclipse project by pressing F5 (function key 5).
+
+The "root" directory presented by Eclipse is our build directory. This is useful for viewing output files, but it doesn't help us with developing our project. Luckily, CMake provides a resource link in the Eclipse project file named "[Source directory]" that points to the root of the source directory for CMake. We can change anything in this directory and the act of building will update the project file and the associated build rules. This can be extremely useful if you need to add source files to a binary but already have Eclipse open. If you make some changes, you will need to refresh the Eclipse project by pressing F5 (function key 5).
+
+While navigating source files, you will likely notice that Eclipse complains about a few things. Most notably, the apparent lack of proper defines and include indexing. This may be due to the missing linked resources from setting "CMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES" to 0. If you can figure out to fix (or at least silence) the errors, please let me know on the GitHub page.
+
+== Debug the project==
+
+We can debug our project by navigating to "Run" > "Debug History" > "Debug %binary_name%". A debug target for each binary will be available to Eclipse through the "Debug History" menu.
+
+Sometimes, Eclipse will fail to initialize the graphical portion of the debugging interface. You can still interact with the device through normal GDB commands, but you will have only terminal-style feedback regarding the debugging process. Restarting Eclipse usually resolves the problem.
+
+Also, closing the Eclipse debugger can leave the device in a halted/debug state. This can be resolved by power cycling the device or, sometimes, by pressing the reset button on the device.

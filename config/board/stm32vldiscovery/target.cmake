@@ -9,6 +9,7 @@ option(STM_PERIPH_DISCOVERY_FILES "Include the STM32vl peripheral discovery file
 
 # Tell OpenOCD where to find the board script
 set(OPENOCD_CONFIG_TARGETS "-fboard/stm32vldiscovery.cfg")
+set(GCC_ARM_GDB_SUPPORT_DSF_LAUNCHER 1)
 set(GCC_ARM_GDB_INIT_DEBUG "monitor reset halt")
 
 # Tell the STM Firmware which density class to target

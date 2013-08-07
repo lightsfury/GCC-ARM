@@ -8,6 +8,7 @@
 	#error Did not detect a supported platform.
 #endif
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 

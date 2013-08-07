@@ -70,6 +70,7 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfloat-abi=${CPU_FLOAT_ABI}")
 	endif()
 	
+	# Optionally, set the the FPU variant
 	if(CPU_FLOAT_TYPE)
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfpu=${CPU_FLOAT_TYPE}")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=${CPU_FLOAT_TYPE}")
@@ -95,15 +96,27 @@ if(NOT GCC_ARM_CHECK_BUILD_READY)
 			${CMAKE_BINARY_DIR}/eclipse/OpenOCD.launch)
 	endif()
 	
-	if(GCC_ARM_GDB_REQUIRE_DSF)
+	if(GCC_ARM_GDB_SUPPORT_DSF_LAUNCHER)
 		set(GCC_ARM_ECLIPSE_DEBUG_LAUNCHER "dsfLaunchDelegate")
-	elseif(GCC_ARM_GDB_REQUIRE_STANDARD)
+	else()
 		set(GCC_ARM_ECLIPSE_DEBUG_LAUNCHER "cdiLaunchDelegate")
 	endif()
 
 	# Find the full path to common utilities
 	find_program(GCC_ARM_GDB_PATH "arm-none-eabi-gdb")
 	find_program(GCC_ARM_OBJCOPY_PATH "arm-none-eabi-objcopy")
+	
+	# Construct the default Eclipse project name
+	if(NOT GCC_ARM_ECLIPSE_PROJECT_NAME)
+		string(REGEX REPLACE "^.*[/\\]([^/\\]+)[/\\]?$" "\\1" GCC_ARM_ECLIPSE_PROJECT_PATH_SEGMENT ${CMAKE_BINARY_DIR})
+		
+		if(GCC_ARM_ECLIPSE_PROJECT_PATH_SEGMENT)
+			message(STATUS "Last segment in CMAKE_BINARY_DIR - FOUND - ${GCC_ARM_ECLIPSE_PROJECT_PATH_SEGMENT}")
+			set(GCC_ARM_ECLIPSE_PROJECT_NAME "GCC_ARM@${GCC_ARM_ECLIPSE_PROJECT_PATH_SEGMENT}")
+		else()
+			message(STATUS "Last segment in CMAKE_BINARY_DIR - NOT FOUND")
+		endif()
+	endif()
 
 	set(GCC_ARM_CHECK_BUILD_READY 1)
 endif()
