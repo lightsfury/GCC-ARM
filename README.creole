@@ -23,7 +23,7 @@ CMake 2.8 or newer
 GNU compatible make
 * Windows: http://gnuwin32.sourceforge.net/packages/make.htm
 ** MingW and CygWin make should work as drop-in substitutes.
-* Mac OS X: Installed with X-Code or available through Fink/MacPorts.
+* Mac OS X: Installed with X-Code or any GNU compiler. Also available through Fink/MacPorts.
 * Linux: Installed with any GNU compiler, may already be installed.
 
 ==== Optional dependencies ====
@@ -47,3 +47,4 @@ specified in License.txt.
 |2013/7/23  |RJB                |Updated dependencies
 |2013/7/31  |RJB                |Tweaked revisions section
 |2013/8/6   |RJB                |Changed formatting
+|2013/8/8   |RJB                |Tweaked GNU make dependency info
