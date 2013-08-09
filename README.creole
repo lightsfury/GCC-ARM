@@ -2,15 +2,16 @@
 
 == Table of contents ==
 
-1. Install
-   A. Dependencies
-   B. Limitations
-2. License
-3. Revisions
+# Install
+## Dependencies
+### Optional dependencies
+## Limitations
+# License
+# Revisions
 
-=== 1. Install ===
+== Install ==
 
-== 1.A. Dependencies ==
+=== Dependencies ===
 
 ARM cross compiler
 * https://launchpad.net/gcc-arm-embedded
@@ -25,7 +26,7 @@ GNU compatible make
 * Mac OS X: Installed with X-Code or available through Fink/MacPorts.
 * Linux: Installed with any GNU compiler, may already be installed.
 
-== 1.A.i. Optional dependencies ==
+==== Optional dependencies ====
 
 USB driver
 * Windows: http://sourceforge.net/projects/libwdi/files/zadig/
@@ -34,14 +35,15 @@ USB driver
 Programming utility/OpenOCD
 * http://openocd.sourceforge.net/
 
-=== 2. License ===
+== License ==
 
 The template project and makefiles are licensed under the MIT License as
 specified in License.txt.
 
-=== 3. Revisions ===
+== Revisions ==
 |=Date      |=Author            |=Changes
 |2013/6/25  |RJB                |Initial document
 |2013/7/4   |RJB                |Updated dependencies
 |2013/7/23  |RJB                |Updated dependencies
 |2013/7/31  |RJB                |Tweaked revisions section
+|2013/8/6   |RJB                |Changed formatting
