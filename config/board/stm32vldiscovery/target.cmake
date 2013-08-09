@@ -1,7 +1,5 @@
 message(STATUS "Loading configuration for STM32vldiscovery board")
 
-include(GCCARMParseDebugLevel)
-
 include(${CMAKE_SOURCE_DIR}/config/vendor/ST/STM32F10x/cpu.cmake)
 include(${CMAKE_SOURCE_DIR}/config/vendor/ST/STM32F10x/firmware.cmake)
 

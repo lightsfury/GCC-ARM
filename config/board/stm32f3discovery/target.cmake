@@ -1,8 +1,5 @@
 message(STATUS "Loading configuration for STM32F3 discovery boards")
 
-include(GCCARMParseDebugLevel)
-include(GCCARMBuildFileList)
-
 include(${CMAKE_SOURCE_DIR}/config/vendor/ST/STM32F30x/cpu.cmake)
 include(${CMAKE_SOURCE_DIR}/config/vendor/ST/STM32F30x/firmware.cmake)
 
