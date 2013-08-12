@@ -201,6 +201,12 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 		endif()
 	endmacro()
 	
+	macro(LoadConfigurationTargets)
+		foreach(target ${GCC_ARM_CONFIGURATION_TARGETS})
+			include("${CMAKE_SOURCE_DIR}/config/${target}/target.cmake")
+		endforeach()
+	endmacro()
+	
 	function(AddBinary targetName)
 		DebugOutput("AddBinary: Creating executable '${targetName}' from files '${ARGN}'.")
 		add_executable(${targetName} ${ARGN} ${GCC_ARM_STARTUP_FILES})
