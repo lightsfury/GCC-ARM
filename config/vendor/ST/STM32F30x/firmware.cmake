@@ -32,8 +32,6 @@ set(STM_PERIPH_DRIVER_FILES
 	${CMAKE_SOURCE_DIR}/config/vendor/ST/firmware/libSTMFirmware.c)
 
 set(STM_USB_DRIVER_FILES
-	${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/src/usb_
-	${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/src/usb_.c
 	${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/src/usb_init.c
 	${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/src/usb_int.c
 	${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/src/usb_mem.c
