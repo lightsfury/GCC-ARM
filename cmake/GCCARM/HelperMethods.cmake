@@ -98,7 +98,7 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 		if(NOT VENDOR_BOOT_SCRIPT)
 			# Fallback to the default boot script
 			message(STATUS "Using the default boot script")
-			set(BOOT_SCRIPT "config/common/boot.c")
+			set(BOOT_SCRIPT "${CMAKE_SOURCE_DIR}/config/common/boot.c")
 		else()
 			message(STATUS "Using the vendor boot script - ${VENDOR_BOOT_SCRIPT}")
 			set(BOOT_SCRIPT ${VENDOR_BOOT_SCRIPT})
@@ -109,7 +109,7 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 			message(FATAL_ERROR "The ISR declaration is not set. Please set GCC_ARM_CONFIGURATION_TARGETS to a supported device configuration.")
 		endif()
 		
-		# The linker script must exist 
+		# The linker script must exist
 		if(NOT EXISTS "${VENDOR_LINK_SCRIPT}")
 			if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
 				message(FATAL_ERROR "Cannot find the linker script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent patH: ${VENDOR_LINK_SCRIPT}")
@@ -118,7 +118,7 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 			endif()
 		endif()
 		
-		# The boot script must exist 
+		# The boot script must exist
 		if(NOT EXISTS "${BOOT_SCRIPT}")
 			if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${BOOT_SCRIPT}")
 				message(FATAL_ERROR "Cannot find the boot script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent patH: ${BOOT_SCRIPT}")
@@ -126,8 +126,9 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 				set(BOOT_SCRIPT "${CMAKE_SOURCE_DIR}/${BOOT_SCRIPT}")
 			endif()
 		endif()
+		message(STATUS "Boot script set as ${BOOT_SCRIPT}")
 		
-		# The ISR declaration must exist 
+		# The ISR declaration must exist
 		if(NOT EXISTS "${VENDOR_ISR_VECTOR}")
 			if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_ISR_VECTOR}")
 				message(FATAL_ERROR "Cannot find the ISR declaration. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent patH: ${VENDOR_ISR_VECTOR}")
@@ -170,11 +171,6 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 			add_custom_target(bricked-it
 				"${GCC_ARM_OPENOCD_SERVER_PATH}" "${OPENOCD_CONFIG_TARGETS}" -f "${CMAKE_SOURCE_DIR}/${VENDOR_OPENOCD_SCRIPT}" -c "i_bricked_it" VERBATIM)
 			set(OPENOCD_ECLIPSE_PARAMS "${OPENOCD_CONFIG_TARGETS}")
-			# The Eclipse debug launchers automatically launch OpenOCD
-			# Are these still necessary?
-			#configure_file(
-			#	${CMAKE_SOURCE_DIR}/eclipse/OpenOCD.launch.in
-			#	${CMAKE_BINARY_DIR}/eclipse/OpenOCD.launch)
 		endif()
 		
 		# Select the proper Eclipse GDB launcher
