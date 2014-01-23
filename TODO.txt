@@ -1,6 +1,6 @@
 Further investigate CMake viability for build system.
 	A CMake build system seems viable.
-	A significant amount of work is required to bring it to comparable status, but seems like it has lower barriers to maintainence and change.
+	A significant amount of work is required to bring it to comparable status, but seems like it has lower barriers to maintenance and change.
 	The majority of work for the CMake build system is done.
 Create tests for cmake operations.
 	Increase test coverage.

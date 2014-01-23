@@ -233,7 +233,7 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 			DebugOutput("AddBinary: Creating Eclipse debugging config file.")
 			configure_file(
 				"${CMAKE_SOURCE_DIR}/eclipse/debug.launch.in"
-				"${CMAKE_BINARY_DIR}/eclipse/Debug ${targetName}.launch")
+				"${CMAKE_BINARY_DIR}/eclipse/Debug ${GCC_ARM_ECLIPSE_PROJECT_NAME}@${targetName}.launch")
 		endif()
 		
 		DebugOutput("AddBinary: Splitting debug info to a .debug file.")

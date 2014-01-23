@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 2.8)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR
-"In-source builds are not allowed. Please specify a directory outside
-the GCC-ARM directory. This process created the file 'CMakeCache.txt' and
+"In-source builds are not allowed. Please specify a directory outside \
+the GCC-ARM directory. This process created the file 'CMakeCache.txt' and \
 the directory 'CMakeFiles'; please delete them.")
 endif()
 

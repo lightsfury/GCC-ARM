@@ -36,6 +36,7 @@ int main()
 	while (1)
 	{
 #if defined(STM32F30X)
+    /* Clockwise rotation in 50ms steps */
 		STM_EVAL_LEDToggle(LED3);
 		Delay(50);
 		STM_EVAL_LEDToggle(LED5);
@@ -53,6 +54,7 @@ int main()
 		STM_EVAL_LEDToggle(LED4);
 		Delay(50);
 #elif defined(STM32F10X_MD_VL)
+    /* Left-right toggle in 100ms steps */
 		STM32vldiscovery_LEDToggle(LED3);
 		Delay(100);
 		STM32vldiscovery_LEDToggle(LED4);
@@ -81,7 +83,11 @@ int main()
 #elif defined(STM32F10X_MD_VL)
 	void InitPeripheralDevices()
 	{
-		uint32_t lseDelay = 0;
+		RCC_ClocksTypeDef rcc;
+		RCC_GetClocksFreq(&rcc);
+		SysTick_Config(rcc.HCLK_Frequency / 1000);
+    
+		/* uint32_t lseDelay = SystemCoreClock; */
 		/* Initialize peripheral clocks, etc */
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
@@ -93,13 +99,8 @@ int main()
 
 		STM32vldiscovery_PBInit(BUTTON_USER, BUTTON_MODE_GPIO);
 
-		/* Initialize the SysTick timer to 1kHz */
-		if (SysTick_Config(SystemCoreClock / 1000))
-		{
-			while (1);
-		}
-
 		/* Setup the low-speed external clock */
+    /*
 		PWR_BackupAccessCmd(ENABLE);
 		RCC_LSEConfig(RCC_LSE_ON);
 
@@ -127,7 +128,7 @@ int main()
 				RCC_LSEConfig(RCC_LSE_OFF);
 				break;
 			}
-		}
+		} // */
 	}
 #endif
 
