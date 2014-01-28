@@ -25,7 +25,7 @@ OpenOCD does not work with the ST drivers for ST-Link (NOT ST-Link V/2). Please 
 * Windows: http://sourceforge.net/projects/libwdi/files/zadig/
 * MacOS/Linux: You are already using libusb drivers.
 
-= Optional =
+=== Optional ===
 The project template includes support for programming and debugging through Eclipse.
 * http://www.eclipse.org
 
@@ -43,6 +43,7 @@ The prcoess should finish with an error. Don't panic, this is expected.
 
 The errors should look like:
 
+# @TODO Update error messages
 CMake Error at cmake/GCCARMCheckBuildReady.cmake:6 (message):
   The CPU type is not set.  Please set the proper configuration targets.
 Call Stack (most recent call first):
@@ -73,6 +74,7 @@ If you have additional errors, verify the steps you've made so far.
 To use the template project, we need to set the GCC_ARM_CONFIGURATION_TARGETS.
 For the STM32 vl Discovery board, use a value of "board/stm32vldiscovery".
 For the STM32F3 Discovery board, use a value of "board/stm32f3discovery".
+For the STM32F429 Discovery board, use a value of "board/stm32f429discovery".
 For future reference, the supported configuration targets can be found in the "config" directory. The GCC_ARM_CONFIGURATION_TARGETS variable is the intermediate path between the "config" directory and the device's "target.cmake" file.
 
 Now that we've choosen a device configuration, click "Configure" once more.
@@ -118,7 +120,7 @@ While navigating source files, you will likely notice that Eclipse complains abo
 
 == Debug the project==
 
-We can debug our project by navigating to "Run" > "Debug History" > "Debug %binary_name%". A debug target for each binary will be available to Eclipse through the "Debug History" menu.
+We can debug our project by navigating to "Run" > "Debug History" > "Debug GCC_ARM@<name of the build directory>@<name of binary>". A debug target for each binary will be available to Eclipse through the "Debug History" menu. On Windows, the second at (@) symbol causes <name of binary> to be right aligned.
 
 Sometimes, Eclipse will fail to initialize the graphical portion of the debugging interface. You can still interact with the device through normal GDB commands, but you will have only terminal-style feedback regarding the debugging process. Restarting Eclipse usually resolves the problem.
 
