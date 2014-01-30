@@ -40,3 +40,8 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 	
 	set(VENDOR_FIRMWARE_TARGET ${VENDOR_FIRMWARE_TARGET} STM32F3discoveryFirmware)
 endif()
+
+if(GCC_ARM_EXAMPLE_PROJECTS)
+  add_subdirectory(example/common/Minimal)
+  add_subdirectory(example/board/stm32f3discovery/LED)
+endif()

@@ -91,7 +91,12 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 		
 		# A linker script is required
 		if(NOT VENDOR_LINK_SCRIPT)
-			message(FATAL_ERROR "The target link script is not set. Please set GCC_ARM_CONFIGURATION_TARGETS to a supported device configuration.")
+      # Fallback to the default link script
+      message(STATUS "Using the default linker script")
+      set(LINK_SCRIPT "${CMAKE_SOURCE_DIR}/config/common/memory.ld")
+    else
+      message(STATUS "Using a custom linker script - ${VENDOR_LINK_SCRIPT}")
+      set(LINK_SCRIPT ${VENDOR_LINK_SCRIPT})
 		endif()
 		
 		# A boot script is required
@@ -110,11 +115,11 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 		endif()
 		
 		# The linker script must exist
-		if(NOT EXISTS "${VENDOR_LINK_SCRIPT}")
-			if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
-				message(FATAL_ERROR "Cannot find the linker script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent patH: ${VENDOR_LINK_SCRIPT}")
+		if(NOT EXISTS "${LINK_SCRIPT}")
+			if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${LINK_SCRIPT}")
+				message(FATAL_ERROR "Cannot find the linker script. The path should be absolute or relative to CMAKE_SOURCE_DIR.\nCurrent patH: ${LINK_SCRIPT}")
 			else()
-				set(VENDOR_LINK_SCRIPT "${CMAKE_SOURCE_DIR}/${VENDOR_LINK_SCRIPT}")
+				set(LINK_SCRIPT "${CMAKE_SOURCE_DIR}/${LINK_SCRIPT}")
 			endif()
 		endif()
 		
@@ -141,8 +146,8 @@ if(NOT GCC_ARM_HELPER_METHODS_INCLUDED)
 		set(CMAKE_C_FLAGS "-Wall \"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -g -gdwarf-2 ${VENDOR_C_FLAGS} ${GCC_ARM_OPTIMIZATION_FLAGS} ${GCC_ARM_ASSERT_FLAGS}")
 		set(CMAKE_CXX_FLAGS "-Wall \"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -g -gdwarf-2 ${VENDOR_CXX_FLAGS} ${GCC_ARM_OPTIMIZATION_FLAGS} ${GCC_ARM_ASSERT_FLAGS}")
 		# Setup linker flags
-		set(CMAKE_C_LINK_FLAGS "\"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -L \"${CMAKE_SOURCE_DIR}/config\" -T \"${VENDOR_LINK_SCRIPT}\"")
-		set(CMAKE_CXX_LINK_FLAGS "\"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -L \"${CMAKE_SOURCE_DIR}/config\" -T \"${VENDOR_LINK_SCRIPT}\"")
+		set(CMAKE_C_LINK_FLAGS "\"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -L \"${CMAKE_SOURCE_DIR}/config\" -T \"${LINK_SCRIPT}\"")
+		set(CMAKE_CXX_LINK_FLAGS "\"-m${CODE_TYPE}\" \"-mcpu=${CPU_TYPE}\" -L \"${CMAKE_SOURCE_DIR}/config\" -T \"${LINK_SCRIPT}\"")
 
 		# Optionally, setup the float ABI
 		if(CPU_FLOAT_ABI)

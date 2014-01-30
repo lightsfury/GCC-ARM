@@ -34,6 +34,7 @@ set(GCC_ARM_DEBUG_OPTIONS "Assert;SizeOpt" CACHE STRING "Specify the debug optio
 option(GCC_ARM_AUTO_LINK_LIBC "Automatically link against the libc implementation." ON)
 option(GCC_ARM_RUN_CMAKE_TESTS "Run the test suite for the CMake helper functions." OFF)
 option(GCC_ARM_CMAKE_DEBUG_OUTPUT "Display debug messages from CMake helper functions. This option generates A LOT of messages." OFF)
+option(GCC_ARM_EXAMPLE_PROJECTS "Include and build the example projects. Please view the board/target documentation for available example projects." ON)
 
 if(GCC_ARM_RUN_CMAKE_TESTS)
 	message(STATUS "Running CMake tests")

@@ -42,3 +42,9 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 	
 	set(VENDOR_FIRMWARE_TARGET ${VENDOR_FIRMWARE_TARGET} STM32F429discoveryFirmware)
 endif()
+
+if(GCC_ARM_EXAMPLE_PROJECTS)
+  add_subdirectory(example/common/Minimal)
+  add_subdirectory(example/board/stm32f429discovery/LED)
+  add_subdirectory(example/board/stm32f429discovery/Compass)
+endif()
