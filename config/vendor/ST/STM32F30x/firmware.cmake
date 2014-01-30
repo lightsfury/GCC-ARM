@@ -40,8 +40,6 @@ set(STM_USB_DRIVER_FILES
 
 if(STM_USE_PERIPH_DRIVER)
   add_definitions(-DUSE_STDPERIPH_DRIVER)
-	#set(VENDOR_C_FLAGS "${VENDOR_C_FLAGS} \"-DUSE_STDPERIPH_DRIVER\"")
-	#set(VENDOR_CXX_FLAGS "${VENDOR_CXX_FLAGS} \"-DUSE_STDPERIPH_DRIVER\"")
 	
 	include_directories(
 		"${STM_PERIPH_DRIVER_PATH}/Libraries/CMSIS/Include"
@@ -56,8 +54,6 @@ endif()
 
 if(STM_USE_USB_DRIVER)
   add_definitions(-DSTM_USB_DRIVER)
-	#set(VENDOR_C_FLAGS "${VENDOR_C_FLAGS} \"-DSTM_USB_DRIVER\"")
-	#set(VENDOR_CXX_FLAGS "${VENDOR_CXX_FLAGS} \"-DSTM_USB_DRIVER\"")
 	
 	include_directories("${STM_PERIPH_DRIVER_PATH}/Libraries/STM32_USB-FS-Device_Driver/inc")
 

@@ -4,6 +4,9 @@
 #elif defined(STM32F10X_MD_VL)
 	#include <STM32F10X.h>
 	#include <stm32vldiscovery.h>
+#elif defined(STM32F429_439xx)
+  #include <STM32F4XX.h>
+  #include <stm32f429i_discovery.h>
 #else
 	#error Did not detect a supported platform.
 #endif
@@ -59,18 +62,27 @@ int main()
 		Delay(100);
 		STM32vldiscovery_LEDToggle(LED4);
 		Delay(100);
+#elif defined(STM32F429_439xx)
+    STM_EVAL_LEDToggle(LED3);
+    Delay(100);
+    STM_EVAL_LEDToggle(LED4);
+    Delay(100);
 #endif
 	}
 }
-
 
 #if defined(STM32F30X)
 	void InitPeripheralDevices()
 	{
 		RCC_ClocksTypeDef rcc;
+    
+    /* Get the configured clock frequencies */
 		RCC_GetClocksFreq(&rcc);
+    
+    /* Setup the SysTick timer */
 		SysTick_Config(rcc.HCLK_Frequency / 1000);
 		
+    /* Initialize the LEDs on the discovery board */
 		STM_EVAL_LEDInit(LED3);
 		STM_EVAL_LEDInit(LED4);
 		STM_EVAL_LEDInit(LED5);
@@ -84,51 +96,32 @@ int main()
 	void InitPeripheralDevices()
 	{
 		RCC_ClocksTypeDef rcc;
+    
+    /* Get the configured clock frequencies */
 		RCC_GetClocksFreq(&rcc);
 		SysTick_Config(rcc.HCLK_Frequency / 1000);
     
-		/* uint32_t lseDelay = SystemCoreClock; */
 		/* Initialize peripheral clocks, etc */
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
 		STM32vldiscovery_LEDInit(LED3);
 		STM32vldiscovery_LEDInit(LED4);
-
-		STM32vldiscovery_LEDOff(LED3);
-		STM32vldiscovery_LEDOff(LED4);
-
-		STM32vldiscovery_PBInit(BUTTON_USER, BUTTON_MODE_GPIO);
-
-		/* Setup the low-speed external clock */
-    /*
-		PWR_BackupAccessCmd(ENABLE);
-		RCC_LSEConfig(RCC_LSE_ON);
-
-		while (1)
-		{
-			if (lseDelay < 0x08)
-			{
-				Delay(500);
-				lseDelay += 0x01;
-				if (RCC_GetFlagStatus(RCC_FLAG_LSERDY) != RESET)
-				{
-					lseDelay |= 0x100;
-					STM32vldiscovery_LEDOff(LED4);
-					RCC_LSEConfig(RCC_LSE_OFF);
-					break;
-				}
-			}
-			else
-			{
-				if (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
-				{
-					lseDelay |= 0x0f0;
-					STM32vldiscovery_LEDOn(LED4);
-				}
-				RCC_LSEConfig(RCC_LSE_OFF);
-				break;
-			}
-		} // */
+	}
+#elif defined(STM32F429_439xx)
+	void InitPeripheralDevices()
+	{
+		RCC_ClocksTypeDef rcc;
+    
+    /* Get the configured clock frequencies */
+		RCC_GetClocksFreq(&rcc);
+    
+    /* Setup the SysTick timer */
+		SysTick_Config(rcc.HCLK_Frequency / 1000);
+		
+    /* Initialize the LEDs on the discovery board */
+		
+		STM_EVAL_LEDInit(LED3);
+		STM_EVAL_LEDInit(LED4);
 	}
 #endif
 
@@ -141,16 +134,11 @@ void debugMessage(char* msg)
 	}
 }
 
+/*
 __attribute__((naked))
 void HardFault_Handler()
 {
 	static char msg[80];
-	
-	/*
-	sprintf(msg, "  HKSR: 0x%08x\n", (unsigned int)(SCB->HFSR));
-	debugMessage("HardFault_Handler");
-	debugMessage(msg);
-	// */
 	
 	while (1) asm("nop");
 }
@@ -161,4 +149,4 @@ void BusFault_Handler()
 	volatile static uint32_t* CFSR = 0xE000ED28;
 	
 	asm("BKPT #0");
-}
+} // */

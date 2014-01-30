@@ -28,7 +28,7 @@ void Default_Handler()
 {
 	while (1)
 	{
-		/** Intentional no-op loop */
+		/* Intentional no-op loop */
 		asm("nop");
 	}
 }
