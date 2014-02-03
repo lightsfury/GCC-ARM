@@ -30,9 +30,9 @@ int main()
 	{
     /* Left-right toggle in 100ms steps */
 		STM32vldiscovery_LEDToggle(LED3);
-		Delay(100);
+		Delay(250);
 		STM32vldiscovery_LEDToggle(LED4);
-		Delay(100);
+		Delay(250);
 	}
 }
 

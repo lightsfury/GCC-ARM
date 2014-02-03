@@ -38,8 +38,7 @@ configure_file(
 	${CMAKE_BINARY_DIR}/config/common/memory.ld)
 
 # Setup a custom linker script
-# Uncomment to use the default linker script
-# set(VENDOR_LINK_SCRIPT ${CMAKE_BINARY_DIR}/config/common/memory.ld)
+ set(VENDOR_LINK_SCRIPT ${CMAKE_BINARY_DIR}/config/common/memory.ld)
 
 if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
   add_definitions(-DUSE_STM_VL_DISCOVERY_FILES)
@@ -51,7 +50,9 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 	set(VENDOR_FIRMWARE_TARGET STM32vlFirmware STM32vldiscoveryFirmware)
 endif()
 
-if(GCC_ARM_EXAMPLE_PROJECTS)
-  add_subdirectory(example/common/Minimal)
-  add_subdirectory(example/board/stm32vldiscovery/LED)
-endif()
+add_example_projects_path(example/common/Minimal example/board/stm32vldiscovery/LED)
+
+#if(GCC_ARM_EXAMPLE_PROJECTS)
+#  add_subdirectory(example/common/Minimal)
+#  add_subdirectory(example/board/stm32vldiscovery/LED)
+#endif()

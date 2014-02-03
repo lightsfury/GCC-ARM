@@ -12,8 +12,6 @@ set(GCC_ARM_GDB_INIT_DEBUG "monitor reset halt")
 
 # Tell the STM Firmware which density class to target
 add_definitions(-DSTM32F30X)
-#set(VENDOR_C_FLAGS "${VENDOR_C_FLAGS} -DSTM32F30X")
-#set(VENDOR_CXX_FLAGS "${VENDOR_CXX_FLAGS} -DSTM32F30X")
 
 set(GCC_ARM_CPU_RAM_DENSITY   "40k")
 set(GCC_ARM_CPU_FLASH_DENSITY "256k")
@@ -41,7 +39,9 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 	set(VENDOR_FIRMWARE_TARGET ${VENDOR_FIRMWARE_TARGET} STM32F3discoveryFirmware)
 endif()
 
-if(GCC_ARM_EXAMPLE_PROJECTS)
-  add_subdirectory(example/common/Minimal)
-  add_subdirectory(example/board/stm32f3discovery/LED)
-endif()
+add_example_projects_path(example/common/Minimal example/board/stm32f3discovery/LED)
+
+#if(GCC_ARM_EXAMPLE_PROJECTS)
+#  add_subdirectory(example/common/Minimal)
+#  add_subdirectory(example/board/stm32f3discovery/LED)
+#endif()

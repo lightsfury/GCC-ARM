@@ -46,6 +46,12 @@ else()
 
 	include_directories("${CMAKE_SOURCE_DIR}/include")
 	link_directories("${CMAKE_BINARY_DIR}")
+  
+  if(GCC_ARM_EXAMPLE_PROJECTS)
+    foreach(path ${GCC_ARM_EXAMPLES_PATHS})
+      add_subdirectory(${path})
+    endforeach()
+  endif()
 
 	add_subdirectory(src)
 endif()

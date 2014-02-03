@@ -52,9 +52,9 @@ void Reset_Handler(void)
 	memset(&_staticZeroStart, 0, (size_t)&_staticZeroLength);
 	
 	// If requested, call a system initializer
-	#ifdef _GCC_ARM_SYSTEM_INIT
+#ifdef _GCC_ARM_SYSTEM_INIT
 	SystemInit();
-	#endif // _GCC_ARM_SYSTEM_INIT
+#endif // _GCC_ARM_SYSTEM_INIT
 	
 	// Call the libc initializer
 	__libc_init_array();
