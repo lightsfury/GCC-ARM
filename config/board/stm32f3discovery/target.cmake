@@ -26,8 +26,6 @@ set(VENDOR_LINK_SCRIPT ${CMAKE_BINARY_DIR}/config/common/memory.ld)
 
 if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
   add_definitions(-DUSE_STM_F3_DISCOVERY_FILES)
-	#set(VENDOR_C_FLAGS "${VENDOR_C_FLAGS} \"-DUSE_STM_F3_DISCOVERY_FILES\"")
-	#set(VENDOR_CXX_FLAGS "${VENDOR_CXX_FLAGS} \"-DUSE_STM_F3_DISCOVERY_FILES\"")
 	
 	include_directories("${STM_PERIPH_DRIVER_PATH}/Utilities/STM32F3_Discovery")
 	
@@ -40,8 +38,3 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 endif()
 
 add_example_projects_path(example/common/Minimal example/board/stm32f3discovery/LED)
-
-#if(GCC_ARM_EXAMPLE_PROJECTS)
-#  add_subdirectory(example/common/Minimal)
-#  add_subdirectory(example/board/stm32f3discovery/LED)
-#endif()

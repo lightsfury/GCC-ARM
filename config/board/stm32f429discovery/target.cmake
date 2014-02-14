@@ -44,9 +44,3 @@ if(STM_USE_PERIPH_DRIVER AND STM_PERIPH_DISCOVERY_FILES)
 endif()
 
 add_example_projects_path(example/common/Minimal example/board/stm32f429discovery/LED example/board/stm32f429discovery/Compass)
-
-#if(GCC_ARM_EXAMPLE_PROJECTS)
-#  add_subdirectory(example/common/Minimal)
-#  add_subdirectory(example/board/stm32f429discovery/LED)
-#  add_subdirectory(example/board/stm32f429discovery/Compass)
-#endif()
